@@ -64,9 +64,6 @@
 namespace as2 {
 // TODO: Rethink how this parameters are used and how they are set.
 struct AerialPlatformParameters {
-  float mass;
-  float max_thrust;
-  float min_thrust;
   bool simulation_mode;
   std::string control_modes_file;
 };
@@ -222,18 +219,6 @@ class AerialPlatform : public as2::Node {
    * @return false There is a real platform
    */
   inline bool getFlagSimulationMode() const { return parameters_.simulation_mode; }
-
-  /**
-   * @brief Get the aircraft mass in kg.
-   * @return float
-   */
-  inline float getMass() const { return parameters_.mass; }
-
-  /**
-   * @brief Get the maximum thrust in N.
-   * @return float
-   */
-  inline float getMaxThrust() const { return parameters_.max_thrust; }
 
   /**
    * @brief Get whether the platform is armed or not.

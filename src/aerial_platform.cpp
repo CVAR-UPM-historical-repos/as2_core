@@ -53,33 +53,7 @@ namespace as2
       RCLCPP_FATAL(this->get_logger(), "Launch argument <simulation_mode> not defined or malformed: %s", e.what());
       this->~AerialPlatform();
     }
-    try
-    {
-      this->declare_parameter<float>("mass");
-    }
-    catch(const rclcpp::ParameterTypeException& e)
-    {
-      RCLCPP_FATAL(this->get_logger(), "Launch argument <mass> not defined or malformed: %s", e.what());
-      this->~AerialPlatform();
-    }
-    try
-    {
-      this->declare_parameter<float>("max_thrust");
-    }
-    catch(const rclcpp::ParameterTypeException& e)
-    {
-      RCLCPP_FATAL(this->get_logger(), "Launch argument <max_thrust> not defined or malformed: %s", e.what());
-      this->~AerialPlatform();
-    }
-    try
-    {
-      this->declare_parameter<float>("min_thrust");
-    }
-    catch(const rclcpp::ParameterTypeException& e)
-    {
-      RCLCPP_FATAL(this->get_logger(), "Launch argument <min_thrust> not defined or malformed: %s", e.what());
-      this->~AerialPlatform();
-    }
+    
     try
     {
       this->declare_parameter<std::string>("control_modes_file");
@@ -89,25 +63,11 @@ namespace as2
       RCLCPP_FATAL(this->get_logger(), "Launch argument <control_modes_file> not defined or malformed: %s", e.what());
       this->~AerialPlatform();
     }
-    
+
     this->get_parameter("cmd_freq", cmd_freq_);
     this->get_parameter("info_freq", info_freq_);
     this->get_parameter("simulation_mode", parameters_.simulation_mode);
-    this->get_parameter("mass", parameters_.mass);
-    this->get_parameter("max_thrust", parameters_.max_thrust);
-    this->get_parameter("min_thrust", parameters_.min_thrust);
     this->get_parameter("control_modes_file", parameters_.control_modes_file);
-
-    RCLCPP_INFO(this->get_logger(), "simulation_mode: %d", parameters_.simulation_mode);
-    RCLCPP_INFO(this->get_logger(), "mass: %.2f kg", parameters_.mass);
-    if (parameters_.max_thrust == 0)
-    {
-      RCLCPP_WARN(this->get_logger(), "max_thrust is 1 : CODE MAY FAIL IF THRUST IS NORMALIZED");
-    }
-    else
-    {
-      RCLCPP_INFO(this->get_logger(), "max_thrust: %.2f N", parameters_.max_thrust);
-    }
 
     this->loadControlModes(parameters_.control_modes_file);
 
