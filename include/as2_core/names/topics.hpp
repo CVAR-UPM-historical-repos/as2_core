@@ -77,6 +77,9 @@ namespace as2_names
       // const std::string wayp = "motion_reference/waypoints";
       const rclcpp::QoS qos_waypoint = rclcpp::QoS(10);
       const std::string modify_waypoint = "motion_reference/modify_waypoint";
+
+      const std::string traj_gen_info = "traj_gen/info";
+      const rclcpp::QoS traj_gen_qos = rclcpp::QoS(10);
     }
     namespace actuator_command
     {
