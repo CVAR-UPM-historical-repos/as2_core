@@ -78,6 +78,12 @@ namespace as2_names
             const std::string path_to_geopath = "";
             const std::string geopath_to_path = "";
         }
+        namespace behaviour
+        {
+            const std::string package_pickup = "behaviour/package_pickup";
+            const std::string package_unpick = "behaviour/package_unpick";
+            const std::string dynamic_land = "behaviour/dynamic_land";
+        }
         const std::string set_speed = ""; // TODO
     }
 }

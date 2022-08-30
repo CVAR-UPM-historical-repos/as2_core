@@ -95,6 +95,11 @@ namespace as2_names
       const rclcpp::QoS qos_info = rclcpp::QoS(10);
       const std::string info = "controller/info";
     }
+    namespace follow_target
+    {
+      const rclcpp::QoS qos_info = rclcpp::QoS(10);
+      const std::string info = "follow_target/info";
+    }
   }
 }
 #endif // __AS2_NAMES_TOPICS_HPP__
