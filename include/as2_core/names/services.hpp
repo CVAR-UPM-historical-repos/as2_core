@@ -83,6 +83,7 @@ namespace as2_names
             const std::string package_pickup = "behaviour/package_pickup";
             const std::string package_unpick = "behaviour/package_unpick";
             const std::string dynamic_land = "behaviour/dynamic_land";
+            const std::string dynamic_follower = "behaviour/dynamic_follower";
         }
         const std::string set_speed = ""; // TODO
     }
