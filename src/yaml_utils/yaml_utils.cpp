@@ -89,9 +89,8 @@ namespace as2
     {
       YAML::Node config = YAML::LoadFile(yaml_file.string());
       YAML::Node available_modes_node = as2::find_tag_in_yaml_node(config, tag);
-      if (available_modes_node != YAML::Node())
+      if (!(available_modes_node == YAML::Node()))
       {
-
         return available_modes_node;
       }
     }
