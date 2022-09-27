@@ -40,69 +40,59 @@
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 
-namespace as2_names
-{
-  namespace topics
-  {
-    namespace sensor_measurements
-    {
-      const rclcpp::QoS qos = rclcpp::SensorDataQoS();
-      const std::string imu = "sensor_measurements/imu";
-      const std::string lidar = "sensor_measurements/lidar";
-      const std::string gps = "sensor_measurements/gps";
-      const std::string camera = "sensor_measurements/camera";
-      const std::string battery = "sensor_measurements/battery";
-      const std::string odom = "sensor_measurements/odom";
-    }
-    namespace ground_truth
-    {
-      const rclcpp::QoS qos = rclcpp::SensorDataQoS();
-      const std::string pose = "ground_truth/pose";
-      const std::string twist = "ground_truth/twist";
-    }
-    namespace self_localization
-    {
-      const rclcpp::QoS qos = rclcpp::SensorDataQoS();
-      const std::string odom = "self_localization/odom";
-      const std::string pose = "self_localization/pose";
-      const std::string twist = "self_localization/twist";
-    }
-    namespace motion_reference
-    {
-      const rclcpp::QoS qos = rclcpp::SensorDataQoS();
-      const std::string pose = "motion_reference/pose";
-      const std::string twist = "motion_reference/twist";
-      const std::string trajectory = "motion_reference/trajectory";
-      // const rclcpp::QoS qos_wp = rclcpp::ServicesQoS();
-      // const std::string wayp = "motion_reference/waypoints";
-      const rclcpp::QoS qos_waypoint = rclcpp::QoS(10);
-      const std::string modify_waypoint = "motion_reference/modify_waypoint";
+namespace as2_names {
+namespace topics {
+namespace sensor_measurements {
+const rclcpp::QoS qos     = rclcpp::SensorDataQoS();
+const std::string imu     = "sensor_measurements/imu";
+const std::string lidar   = "sensor_measurements/lidar";
+const std::string gps     = "sensor_measurements/gps";
+const std::string camera  = "sensor_measurements/camera";
+const std::string battery = "sensor_measurements/battery";
+const std::string odom    = "sensor_measurements/odom";
+}  // namespace sensor_measurements
+namespace ground_truth {
+const rclcpp::QoS qos   = rclcpp::SensorDataQoS();
+const std::string pose  = "ground_truth/pose";
+const std::string twist = "ground_truth/twist";
+}  // namespace ground_truth
+namespace self_localization {
+const rclcpp::QoS qos   = rclcpp::SensorDataQoS();
+const std::string odom  = "self_localization/odom";
+const std::string pose  = "self_localization/pose";
+const std::string twist = "self_localization/twist";
+}  // namespace self_localization
+namespace motion_reference {
+const rclcpp::QoS qos        = rclcpp::SensorDataQoS();
+const std::string pose       = "motion_reference/pose";
+const std::string twist      = "motion_reference/twist";
+const std::string trajectory = "motion_reference/trajectory";
+// const rclcpp::QoS qos_wp = rclcpp::ServicesQoS();
+// const std::string wayp = "motion_reference/waypoints";
+const rclcpp::QoS qos_waypoint    = rclcpp::QoS(10);
+const std::string modify_waypoint = "motion_reference/modify_waypoint";
 
-      const std::string traj_gen_info = "traj_gen/info";
-      const rclcpp::QoS traj_gen_qos = rclcpp::QoS(10);
-    }
-    namespace actuator_command
-    {
-      const rclcpp::QoS qos = rclcpp::SensorDataQoS();
-      const std::string pose = "actuator_command/pose";
-      const std::string twist = "actuator_command/twist";
-      const std::string thrust = "actuator_command/thrust";
-    }
-    namespace platform
-    {
-      const rclcpp::QoS qos = rclcpp::QoS(10);
-      const std::string info = "platform/info";
-    }
-    namespace controller
-    {
-      const rclcpp::QoS qos_info = rclcpp::QoS(10);
-      const std::string info = "controller/info";
-    }
-    namespace follow_target
-    {
-      const rclcpp::QoS qos_info = rclcpp::QoS(10);
-      const std::string info = "follow_target/info";
-    }
-  }
-}
-#endif // __AS2_NAMES_TOPICS_HPP__
+const std::string traj_gen_info = "traj_gen/info";
+const rclcpp::QoS traj_gen_qos  = rclcpp::QoS(10);
+}  // namespace motion_reference
+namespace actuator_command {
+const rclcpp::QoS qos    = rclcpp::SensorDataQoS();
+const std::string pose   = "actuator_command/pose";
+const std::string twist  = "actuator_command/twist";
+const std::string thrust = "actuator_command/thrust";
+}  // namespace actuator_command
+namespace platform {
+const rclcpp::QoS qos  = rclcpp::QoS(10);
+const std::string info = "platform/info";
+}  // namespace platform
+namespace controller {
+const rclcpp::QoS qos_info = rclcpp::QoS(10);
+const std::string info     = "controller/info";
+}  // namespace controller
+namespace follow_target {
+const rclcpp::QoS qos_info = rclcpp::QoS(10);
+const std::string info     = "follow_target/info";
+}  // namespace follow_target
+}  // namespace topics
+}  // namespace as2_names
+#endif  // __AS2_NAMES_TOPICS_HPP__

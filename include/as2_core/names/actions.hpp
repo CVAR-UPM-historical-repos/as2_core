@@ -1,10 +1,8 @@
 /*!*******************************************************************************************
  *  \file       actions.hpp
- *  \brief      This file contains the definition of the actions that can be performed in aerostack2.
- *  \authors    Miguel Fernández Cortizas
- *              Pedro Arias Pérez
- *              David Pérez Saura
- *              Rafael Pérez Seguí
+ *  \brief      This file contains the definition of the actions that can be performed in
+ *aerostack2. \authors    Miguel Fernández Cortizas Pedro Arias Pérez David Pérez Saura Rafael Pérez
+ *Seguí
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved
@@ -40,18 +38,15 @@
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 
-namespace as2_names
-{
-    namespace actions
-    {
-        namespace behaviours
-        {
-            const std::string takeoff = "TakeOffBehaviour";
-            const std::string gotowaypoint = "GoToWaypointBehaviour";
-            const std::string followpath = "FollowPathBehaviour";
-            const std::string land = "LandBehaviour";
-        }
-    }
-}
+namespace as2_names {
+namespace actions {
+namespace behaviours {
+const std::string takeoff      = "TakeOffBehaviour";
+const std::string gotowaypoint = "GoToWaypointBehaviour";
+const std::string followpath   = "FollowPathBehaviour";
+const std::string land         = "LandBehaviour";
+}  // namespace behaviours
+}  // namespace actions
+}  // namespace as2_names
 
-#endif // __AS2_NAMES_ACTIONS_HPP__
+#endif  // __AS2_NAMES_ACTIONS_HPP__

@@ -61,13 +61,13 @@
 #include <image_transport/image_transport.hpp>
 
 // tf2
-#include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/static_transform_broadcaster.h>
 
 namespace as2 {
 namespace sensors {
 class GenericSensor {
-  public:
+public:
   GenericSensor(const std::string &topic_name, as2::Node *node_ptr, int pub_freq = -1)
       : node_ptr_(node_ptr), pub_freq_(pub_freq) {
     // check if topic already has "sensor_measurements "in the name
@@ -77,48 +77,67 @@ class GenericSensor {
     }
   }
 
-  protected:
+protected:
   std::string topic_name_;
   as2::Node *node_ptr_ = nullptr;
   float pub_freq_;
   rclcpp::TimerBase::SharedPtr timer_;
 
-  public:
+public:
   // std::string sensor_id_;
 
-  virtual void setStaticTransform(const std::string &frame_id, const std::string &parent_frame_id, float x,
-                          float y, float z, float qx, float qy, float qz, float qw) {
+  virtual void setStaticTransform(const std::string &frame_id,
+                                  const std::string &parent_frame_id,
+                                  float x,
+                                  float y,
+                                  float z,
+                                  float qx,
+                                  float qy,
+                                  float qz,
+                                  float qw) {
     setStaticTransform_(frame_id, parent_frame_id, x, y, z, qx, qy, qz, qw);
   }
 
-  virtual void setStaticTransform(const std::string &frame_id, const std::string &parent_frame_id, float x,
-                          float y, float z, float roll, float pitch, float yaw) {
+  virtual void setStaticTransform(const std::string &frame_id,
+                                  const std::string &parent_frame_id,
+                                  float x,
+                                  float y,
+                                  float z,
+                                  float roll,
+                                  float pitch,
+                                  float yaw) {
     // convert to quaternion and set the transform
     tf2::Quaternion q;
     q.setRPY(roll, pitch, yaw);
     setStaticTransform_(frame_id, parent_frame_id, x, y, z, q.x(), q.y(), q.z(), q.w());
   };
-  
-  protected:
-  void setStaticTransform_(const std::string &frame_id, const std::string &parent_frame_id, float x,
-                          float y, float z, float qx, float qy, float qz, float qw) {
-    static tf2_ros::StaticTransformBroadcaster static_broadcaster((rclcpp::Node*)node_ptr_);
+
+protected:
+  void setStaticTransform_(const std::string &frame_id,
+                           const std::string &parent_frame_id,
+                           float x,
+                           float y,
+                           float z,
+                           float qx,
+                           float qy,
+                           float qz,
+                           float qw) {
+    static tf2_ros::StaticTransformBroadcaster static_broadcaster((rclcpp::Node *)node_ptr_);
     geometry_msgs::msg::TransformStamped transformStamped;
-    transformStamped.header.stamp = rclcpp::Clock().now();
-    transformStamped.header.frame_id = parent_frame_id;
-    transformStamped.child_frame_id = frame_id;
+    transformStamped.header.stamp            = rclcpp::Clock().now();
+    transformStamped.header.frame_id         = parent_frame_id;
+    transformStamped.child_frame_id          = frame_id;
     transformStamped.transform.translation.x = x;
     transformStamped.transform.translation.y = y;
     transformStamped.transform.translation.z = z;
-    transformStamped.transform.rotation.x = qx;
-    transformStamped.transform.rotation.y = qy;
-    transformStamped.transform.rotation.z = qz;
-    transformStamped.transform.rotation.w = qw;
+    transformStamped.transform.rotation.x    = qx;
+    transformStamped.transform.rotation.y    = qy;
+    transformStamped.transform.rotation.z    = qz;
+    transformStamped.transform.rotation.w    = qw;
     static_broadcaster.sendTransform(transformStamped);
     RCLCPP_INFO(node_ptr_->get_logger(), "Static transform for %s to %s published",
                 frame_id.c_str(), parent_frame_id.c_str());
   }
-
 
   void registerSensor(){};
 
@@ -126,7 +145,7 @@ class GenericSensor {
 
 template <typename T>
 class Sensor : public GenericSensor {
-  public:
+public:
   Sensor(const std::string &id, as2::Node *node_ptr, int pub_freq = -1)
       : GenericSensor(id, node_ptr, pub_freq) {
     sensor_publisher_ = node_ptr_->create_publisher<T>(this->topic_name_,
@@ -146,18 +165,18 @@ class Sensor : public GenericSensor {
     }
   }
 
-  private:
+private:
   void publishData() { this->sensor_publisher_->publish(msg_data_); }
   void publishData(const T &msg) { this->sensor_publisher_->publish(msg); }
 
-  private:
+private:
   typename rclcpp::Publisher<T>::SharedPtr sensor_publisher_;
   T msg_data_;
 
 };  // class Sensor
 
 class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> {
-  public:
+public:
   Camera(const std::string &id, as2::Node *node_ptr);
   ~Camera();
 
@@ -170,9 +189,16 @@ class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> 
   void publishRectifiedImage(const sensor_msgs::msg::Image &msg);
   // void publishCompressedImage(const sensor_msgs::msg::Image &msg);
 
-  void setStaticTransform(const std::string &frame_id, const std::string &parent_frame_id, float x,
-                          float y, float z, float qx, float qy, float qz, float qw) override{
-    // FIXME: enhance performance 
+  void setStaticTransform(const std::string &frame_id,
+                          const std::string &parent_frame_id,
+                          float x,
+                          float y,
+                          float z,
+                          float qx,
+                          float qy,
+                          float qz,
+                          float qw) override {
+    // FIXME: enhance performance
     // obtain r,p and yaw from quaternion
     tf2::Quaternion q(qx, qy, qz, qw);
     tf2::Matrix3x3 m(q);
@@ -181,26 +207,31 @@ class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> 
     setStaticTransform(frame_id, parent_frame_id, x, y, z, roll, pitch, yaw);
   }
 
-  void setStaticTransform(const std::string &frame_id, const std::string &parent_frame_id, float x,
-                          float y, float z, float roll, float pitch, float yaw) override {
+  void setStaticTransform(const std::string &frame_id,
+                          const std::string &parent_frame_id,
+                          float x,
+                          float y,
+                          float z,
+                          float roll,
+                          float pitch,
+                          float yaw) override {
     // convert to quaternion and set the transform
     tf2::Quaternion q;
     q.setRPY(roll, pitch, yaw);
     setStaticTransform_(frame_id, parent_frame_id, x, y, z, q.x(), q.y(), q.z(), q.w());
 
     // if frame_id does not contain "camera_link"
-    if ( frame_id.find("camera_link") == std::string::npos ) {
+    if (frame_id.find("camera_link") == std::string::npos) {
       // set the static transform for the camera_link frame rotating from FLU  to RDF
-      yaw = -M_PI/2.0f;
+      yaw   = -M_PI / 2.0f;
       pitch = 0;
-      roll = -M_PI/2.0f;
+      roll  = -M_PI / 2.0f;
       q.setRPY(roll, pitch, yaw);
-      setStaticTransform_(frame_id + "/camera_link", frame_id, 0, 0 , 0, q.x(), q.y(), q.z(), q.w());
+      setStaticTransform_(frame_id + "/camera_link", frame_id, 0, 0, 0, q.x(), q.y(), q.z(), q.w());
     }
-
   };
 
-  private:
+private:
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_publisher_;
   rclcpp::Publisher<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_publisher_;
   std::shared_ptr<image_transport::ImageTransport> image_transport_ptr_ = nullptr;
@@ -211,17 +242,17 @@ class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> 
 
   std::shared_ptr<rclcpp::Node> getSelfPtr();
 
-  bool setup_ = true;
+  bool setup_                 = true;
   bool camera_info_available_ = false;
 
 };  // class CameraSensor
 
-using Imu = Sensor<sensor_msgs::msg::Imu>;
-using GPS = Sensor<sensor_msgs::msg::NavSatFix>;
-using Lidar = Sensor<sensor_msgs::msg::LaserScan>;
-using Battery = Sensor<sensor_msgs::msg::BatteryState>;
-using Barometer = Sensor<sensor_msgs::msg::FluidPressure>;
-using Compass = Sensor<sensor_msgs::msg::MagneticField>;
+using Imu         = Sensor<sensor_msgs::msg::Imu>;
+using GPS         = Sensor<sensor_msgs::msg::NavSatFix>;
+using Lidar       = Sensor<sensor_msgs::msg::LaserScan>;
+using Battery     = Sensor<sensor_msgs::msg::BatteryState>;
+using Barometer   = Sensor<sensor_msgs::msg::FluidPressure>;
+using Compass     = Sensor<sensor_msgs::msg::MagneticField>;
 using RangeFinder = Sensor<sensor_msgs::msg::Range>;
 
 };  // namespace sensors

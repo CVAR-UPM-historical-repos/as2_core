@@ -1,9 +1,9 @@
 /*!*******************************************************************************************
  *  \file       control_mode_utils.cpp
  *  \brief      Utility functions for handling control modes over the aerostack2 framework
- *  \authors    Miguel Fernández Cortizas 
- *              Pedro Arias Pérez 
- *              David Pérez Saura 
+ *  \authors    Miguel Fernández Cortizas
+ *              Pedro Arias Pérez
+ *              David Pérez Saura
  *              Rafael Pérez Seguí
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
@@ -95,7 +95,7 @@ uint8_t convertAS2ControlModeToUint8t(const as2_msgs::msg::ControlMode &mode) {
       control_mode_uint8t = 0b00010000;
       break;
     default:
-        RCLCPP_ERROR(rclcpp::get_logger("as2_mode"), "control_mode not recognized");
+      RCLCPP_ERROR(rclcpp::get_logger("as2_mode"), "control_mode not recognized");
 
       break;
   }
@@ -190,7 +190,7 @@ as2_msgs::msg::ControlMode convertUint8tToAS2ControlMode(uint8_t control_mode_ui
     mode.yaw_mode = as2_msgs::msg::ControlMode::YAW_ANGLE;
   } else if ((control_mode_uint8t & 0b00000110) == 0b00001000) {
     mode.yaw_mode = as2_msgs::msg::ControlMode::NONE;
-  }else {
+  } else {
     RCLCPP_ERROR(rclcpp::get_logger("as2_mode"), "Yaw mode not recognized");
   }
 
@@ -209,7 +209,7 @@ as2_msgs::msg::ControlMode convertUint8tToAS2ControlMode(uint8_t control_mode_ui
   return mode;
 }
 
-std::string controlModeToString(const as2_msgs::msg::ControlMode& mode) {
+std::string controlModeToString(const as2_msgs::msg::ControlMode &mode) {
   std::stringstream ss;
   switch (mode.control_mode) {
     case as2_msgs::msg::ControlMode::UNSET: {
@@ -286,7 +286,8 @@ std::string controlModeToString(const uint8_t control_mode_uint8t) {
 }
 
 void printControlMode(const as2_msgs::msg::ControlMode &mode) {
-  RCLCPP_INFO(rclcpp::get_logger("as2_mode"), "Control mode: %s", controlModeToString(mode).c_str());
+  RCLCPP_INFO(rclcpp::get_logger("as2_mode"), "Control mode: %s",
+              controlModeToString(mode).c_str());
 }
 
 void printControlMode(uint8_t control_mode_uint8t) {

@@ -49,8 +49,10 @@ namespace FrameUtils {
  * @param enu_vec Eigen::Vector3d ENU vector.
  * @return Eigen::Vector3d FLU vector.
  */
-Eigen::Vector3d convertENUtoFLU(const float roll_angle, const float pitch_angle,
-                                const float yaw_angle, const Eigen::Vector3d &enu_vec);
+Eigen::Vector3d convertENUtoFLU(const float roll_angle,
+                                const float pitch_angle,
+                                const float yaw_angle,
+                                const Eigen::Vector3d &enu_vec);
 
 /**
  * @brief Convert ENU (east, north, up) to FLU (forward, left, up) frame.
@@ -88,8 +90,10 @@ Eigen::Vector3d convertENUtoFLU(const Eigen::Quaterniond &quaternion,
  * @param flu_vec Eigen::Vector3d FLU vector.
  * @return Eigen::Vector3d ENU vector.
  */
-Eigen::Vector3d convertFLUtoENU(const float roll_angle, const float pitch_angle,
-                                const float yaw_angle, const Eigen::Vector3d &flu_vec);
+Eigen::Vector3d convertFLUtoENU(const float roll_angle,
+                                const float pitch_angle,
+                                const float yaw_angle,
+                                const Eigen::Vector3d &flu_vec);
 
 /**
  * @brief Convert FLU (forward, left, up) to ENU (east, north, up) frame.
@@ -138,8 +142,10 @@ void quaternionToEuler(const tf2::Quaternion &quaternion, double &roll, double &
  * @param pitch double pointer to store pitch angle.
  * @param yaw double pointer to store yaw angle.
  */
-void quaternionToEuler(const geometry_msgs::msg::Quaternion &quaternion, double &roll,
-                       double &pitch, double &yaw);
+void quaternionToEuler(const geometry_msgs::msg::Quaternion &quaternion,
+                       double &roll,
+                       double &pitch,
+                       double &yaw);
 
 /**
  * @brief Convert quaternion to euler angles.
@@ -147,7 +153,9 @@ void quaternionToEuler(const geometry_msgs::msg::Quaternion &quaternion, double 
  * @param quaternion Eigen::Quaternion to convert.
  * @param yaw double pointer to store yaw angle.
  */
-void quaternionToEuler(const Eigen::Quaterniond &quaternion, double &roll, double &pitch,
+void quaternionToEuler(const Eigen::Quaterniond &quaternion,
+                       double &roll,
+                       double &pitch,
                        double &yaw);
 
 /**
@@ -158,7 +166,9 @@ void quaternionToEuler(const Eigen::Quaterniond &quaternion, double &roll, doubl
  * @param yaw double yaw angle.
  * @param quaternion tf2::Quaternion pointer to store quaternion.
  */
-void eulerToQuaternion(const double &roll, const double &pitch, const double &yaw,
+void eulerToQuaternion(const double &roll,
+                       const double &pitch,
+                       const double &yaw,
                        tf2::Quaternion &quaternion);
 
 /**
@@ -169,7 +179,9 @@ void eulerToQuaternion(const double &roll, const double &pitch, const double &ya
  * @param yaw double yaw angle.
  * @param quaternion geometry_msgs::msg::Quaternion pointer to store quaternion.
  */
-void eulerToQuaternion(const double &roll, const double &pitch, const double &yaw,
+void eulerToQuaternion(const double &roll,
+                       const double &pitch,
+                       const double &yaw,
                        geometry_msgs::msg::Quaternion &quaternion);
 
 /**
@@ -180,7 +192,9 @@ void eulerToQuaternion(const double &roll, const double &pitch, const double &ya
  * @param yaw double yaw angle.
  * @param quaternion Eigen::Quaterniond pointer to store quaternion.
  */
-void eulerToQuaternion(const double &roll, const double &pitch, const double &yaw,
+void eulerToQuaternion(const double &roll,
+                       const double &pitch,
+                       const double &yaw,
                        Eigen::Quaterniond &quaternion);
 
 /**

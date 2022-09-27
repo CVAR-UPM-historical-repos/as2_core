@@ -7,7 +7,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -16,7 +16,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -32,10 +32,10 @@
 
 #include "tf_utils.hpp"
 
-// TODO: add namespace and documentation for this library, move this file inside a folder called frame_utils
+// TODO: add namespace and documentation for this library, move this file inside a folder called
+// frame_utils
 
-std::string generateTfName(std::string _namespace, std::string _frame_name)
-{
+std::string generateTfName(std::string _namespace, std::string _frame_name) {
   std::string tf_name;
 
   if (_namespace.find("/") == 0) {
@@ -52,14 +52,18 @@ std::string generateTfName(std::string _namespace, std::string _frame_name)
   }
 }
 
-geometry_msgs::msg::TransformStamped getTransformation(
-  const std::string & _frame_id, const std::string & _child_frame_id, double _translation_x,
-  double _translation_y, double _translation_z, double _roll, double _pitch, double _yaw)
-{
+geometry_msgs::msg::TransformStamped getTransformation(const std::string& _frame_id,
+                                                       const std::string& _child_frame_id,
+                                                       double _translation_x,
+                                                       double _translation_y,
+                                                       double _translation_z,
+                                                       double _roll,
+                                                       double _pitch,
+                                                       double _yaw) {
   geometry_msgs::msg::TransformStamped transformation;
 
-  transformation.header.frame_id = _frame_id;
-  transformation.child_frame_id = _child_frame_id;
+  transformation.header.frame_id         = _frame_id;
+  transformation.child_frame_id          = _child_frame_id;
   transformation.transform.translation.x = _translation_x;
   transformation.transform.translation.y = _translation_y;
   transformation.transform.translation.z = _translation_z;

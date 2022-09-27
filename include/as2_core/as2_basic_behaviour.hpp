@@ -55,7 +55,7 @@
 namespace as2 {
 template <class MessageT>
 class BasicBehaviour : public as2::Node {
-  public:
+public:
   using GoalHandleAction = rclcpp_action::ServerGoalHandle<MessageT>;
 
   BasicBehaviour(const std::string &name) : Node(name) {
@@ -66,7 +66,7 @@ class BasicBehaviour : public as2::Node {
         std::bind(&BasicBehaviour::handleAccepted, this, std::placeholders::_1));
   };
 
-  public:
+public:
   virtual rclcpp_action::GoalResponse onAccepted(
       const std::shared_ptr<const typename MessageT::Goal> goal) = 0;
   virtual rclcpp_action::CancelResponse onCancel(
@@ -74,7 +74,7 @@ class BasicBehaviour : public as2::Node {
   virtual void onExecute(
       const std::shared_ptr<GoalHandleAction> goal_handle) = 0;  // return true when finished
 
-  private:
+private:
   rclcpp_action::GoalResponse handleGoal(const rclcpp_action::GoalUUID &uuid,
                                          std::shared_ptr<const typename MessageT::Goal> goal) {
     RCLCPP_DEBUG(this->get_logger(), "Received goal request with UUID: %d", uuid);
@@ -96,7 +96,7 @@ class BasicBehaviour : public as2::Node {
         std::bind(&BasicBehaviour::onExecute, this, std::placeholders::_1), goal_handle);
   };
 
-  private:
+private:
   std::thread execution_thread_;
   typename rclcpp_action::Server<MessageT>::SharedPtr action_server_;
 

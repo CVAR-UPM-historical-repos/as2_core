@@ -45,12 +45,12 @@
 namespace as2 {
 namespace rate {
 class RateBase {
-  public:
+public:
   RCLCPP_SMART_PTR_DEFINITIONS_NOT_COPYABLE(RateBase)
 
-  virtual bool sleep() = 0;
-  virtual bool is_steady() const = 0;
-  virtual void reset() = 0;
+  virtual bool sleep()                                     = 0;
+  virtual bool is_steady() const                           = 0;
+  virtual void reset()                                     = 0;
   virtual void set_period(std::chrono::nanoseconds period) = 0;
 };
 
@@ -60,7 +60,7 @@ using std::chrono::nanoseconds;
 
 template <class Clock = std::chrono::high_resolution_clock>
 class GenericRate : public RateBase {
-  public:
+public:
   RCLCPP_SMART_PTR_DEFINITIONS(GenericRate)
 
   explicit GenericRate(double rate)
@@ -110,7 +110,7 @@ class GenericRate : public RateBase {
 
   std::chrono::nanoseconds period() const { return period_; }
 
-  private:
+private:
   RCLCPP_DISABLE_COPY(GenericRate)
 
   std::chrono::nanoseconds period_;
@@ -119,7 +119,7 @@ class GenericRate : public RateBase {
 };
 
 }  // namespace rate
-using Rate = as2::rate::GenericRate<std::chrono::system_clock>;
+using Rate     = as2::rate::GenericRate<std::chrono::system_clock>;
 using WallRate = as2::rate::GenericRate<std::chrono::steady_clock>;
 }  // namespace as2
 

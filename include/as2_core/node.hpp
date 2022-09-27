@@ -55,9 +55,9 @@
 // #define AS2_NODE_FATHER AS2_LIFECYLCE_NODE
 
 #if AS2_NODE_FATHER == AS2_RCLCPP_NODE
-#define AS2_NODE_FATHER_TYPE rclcpp::Node
+#  define AS2_NODE_FATHER_TYPE rclcpp::Node
 #elif AS2_NODE_FATHER == AS2_LIFECYLCE_NODE
-#define AS2_NODE_FATHER_TYPE rclcpp_lifecycle::LifecycleNode
+#  define AS2_NODE_FATHER_TYPE rclcpp_lifecycle::LifecycleNode
 #endif
 
 namespace as2 {
@@ -66,7 +66,7 @@ namespace as2 {
  */
 
 class Node : public AS2_NODE_FATHER_TYPE {
-  public:
+public:
   /**
    * @brief Construct a new Node object
    *
@@ -88,7 +88,8 @@ class Node : public AS2_NODE_FATHER_TYPE {
 #if AS2_NODE_FATHER == AS2_LIFECYLCE_NODE
   template <typename MessageT, typename AllocatorT = std::allocator<void>>
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<MessageT, AllocatorT>> create_publisher(
-      const std::string &topic_name, const rclcpp::QoS &qos,
+      const std::string &topic_name,
+      const rclcpp::QoS &qos,
       const rclcpp::PublisherOptionsWithAllocator<AllocatorT> &options =
           rclcpp::PublisherOptionsWithAllocator<AllocatorT>()) {
     using PublisherT = rclcpp_lifecycle::LifecyclePublisher<MessageT, AllocatorT>;
@@ -101,7 +102,7 @@ class Node : public AS2_NODE_FATHER_TYPE {
 
 #elif AS2_NODE_FATHER == AS2_RCLCPP_NODE
 
-  public:
+public:
   void configure() { this->on_configure(rclcpp_lifecycle::State()); }
   void activate() { this->on_activate(rclcpp_lifecycle::State()); }
   void deactivate() { this->on_deactivate(rclcpp_lifecycle::State()); }
@@ -126,7 +127,7 @@ class Node : public AS2_NODE_FATHER_TYPE {
    */
   std::string generate_global_name(const std::string &name);
 
-  protected:
+protected:
   /**
    * @brief Callback for the activate state
    * @param state
@@ -192,14 +193,14 @@ class Node : public AS2_NODE_FATHER_TYPE {
     return CallbackReturn::SUCCESS;
   };
 
-  private:
+private:
   /**
    * @brief frequency of the spin cycle of the node
    */
   double loop_frequency_;
   std::shared_ptr<as2::Rate> loop_rate_ptr_;
 
-  public:
+public:
   /**
    * @brief sleeps the node to ensure node_frecuency desired
    *
@@ -231,7 +232,7 @@ class Node : public AS2_NODE_FATHER_TYPE {
       return false;
     }
     loop_frequency_ = frequency;
-    loop_rate_ptr_ = std::make_shared<Rate>(loop_frequency_);
+    loop_rate_ptr_  = std::make_shared<Rate>(loop_frequency_);
     return true;
   };
 };

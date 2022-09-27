@@ -76,14 +76,14 @@ struct AerialPlatformParameters {
 
 // TODO: Validate all the system in Pixhawk Class
 class AerialPlatform : public as2::Node {
-  private:
+private:
   bool sending_commands_ = false;
 
   rclcpp::TimerBase::SharedPtr platform_info_timer_;
   as2::PlatformStateMachine state_machine_;
   std::vector<uint8_t> available_control_modes_;
 
-  protected:
+protected:
   as2::AerialPlatformParameters parameters_;
   float cmd_freq_;
   float info_freq_;
@@ -93,7 +93,7 @@ class AerialPlatform : public as2::Node {
   as2_msgs::msg::Thrust command_thrust_msg_;
   as2_msgs::msg::PlatformInfo platform_info_msg_;
 
-  public:
+public:
   /**
    * @brief Construct a new Aerial Platform object, with default parameters.
    *
@@ -159,7 +159,7 @@ class AerialPlatform : public as2::Node {
    */
   virtual bool ownLand() { return false; };
 
-  private:
+private:
   /**
    * @brief Set the arm state of the platform.
    *
@@ -187,18 +187,18 @@ class AerialPlatform : public as2::Node {
    */
   bool setPlatformControlMode(const as2_msgs::msg::ControlMode &msg);
 
-  protected:
+protected:
   /**
    * @brief Send command to the platform.
    * @return true if the command was sent successfully, false otherwise
    */
   bool sendCommand();
 
-  private:
+private:
   void loadControlModes(const std::string &filename);
 
   // Getters
-  public:
+public:
   /**
    * @brief Set the State Machine Event object
    *
@@ -260,7 +260,7 @@ class AerialPlatform : public as2::Node {
   }
 
   // ROS publishers & subscribers
-  private:
+private:
   rclcpp::Publisher<as2_msgs::msg::PlatformInfo>::SharedPtr platform_info_pub_;
 
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_command_sub_;
@@ -272,12 +272,12 @@ class AerialPlatform : public as2::Node {
    */
   void publishPlatformInfo() {
     platform_info_msg_.header.stamp = rclcpp::Clock().now();
-    platform_info_msg_.status = state_machine_.getState();
+    platform_info_msg_.status       = state_machine_.getState();
     platform_info_pub_->publish(platform_info_msg_);
   };
 
   // ROS Services & srv callbacks
-  private:
+private:
   rclcpp::Service<as2_msgs::srv::SetControlMode>::SharedPtr set_platform_mode_srv_;
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr set_arming_state_srv_;
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr set_offboard_mode_srv_;

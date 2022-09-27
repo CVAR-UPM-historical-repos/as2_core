@@ -86,7 +86,7 @@ struct StateMachineTransition {
  */
 
 class PlatformStateMachine {
-  public:
+public:
   /**
    * @brief Constructor of the Platform State Machine.
    * @param node_ptr Pointer to an aerostack2 node.
@@ -130,7 +130,7 @@ class PlatformStateMachine {
   inline void setState(as2_msgs::msg::PlatformStatus state) { state_ = state; };
   inline void setState(const int8_t &state) { state_.state = state; };
 
-  private:
+private:
   std::vector<StateMachineTransition> transitions_;
   as2_msgs::msg::PlatformStatus state_;
   as2::Node *node_ptr_;

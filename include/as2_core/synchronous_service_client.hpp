@@ -55,7 +55,7 @@ class SynchronousServiceClient {
   std::string service_name_;
   std::string node_name_;
 
-  public:
+public:
   using SharedPtr = std::shared_ptr<SynchronousServiceClient<ServiceT>>;
 
   /**
@@ -64,7 +64,7 @@ class SynchronousServiceClient {
    */
   SynchronousServiceClient(std::string service_name) {
     service_name_ = service_name;
-    node_name_ = service_name;
+    node_name_    = service_name;
     // replace all '/' with '_' in name
     std::replace(node_name_.begin(), node_name_.end(), '/', '_');
   }
@@ -93,9 +93,10 @@ class SynchronousServiceClient {
    * @param wait_time Time to wait for the service to be available in seconds
    * @return True if the service was called successfully, false otherwise
    */
-  bool sendRequest(const std::shared_ptr<RequestT> &req, std::shared_ptr<ResponseT> &resp,
+  bool sendRequest(const std::shared_ptr<RequestT> &req,
+                   std::shared_ptr<ResponseT> &resp,
                    int wait_time = 0) {
-    auto node = std::make_shared<rclcpp::Node>(node_name_);
+    auto node   = std::make_shared<rclcpp::Node>(node_name_);
     auto client = node->create_client<ServiceT>(service_name_);
 
     if (wait_time <= 0) {
@@ -131,7 +132,7 @@ class SynchronousServiceClient {
     return true;
   }  // namespace as2
 
-  protected:
+protected:
 };  // namespace as2
 
 }  // namespace as2

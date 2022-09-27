@@ -1,7 +1,7 @@
 /*!*******************************************************************************************
  *  \file       rate.cpp
- *  \brief      ROS2 rate class modified to work with the as2_core namespace and add more functionalities.
- *  \authors    Miguel Fernández Cortizas
+ *  \brief      ROS2 rate class modified to work with the as2_core namespace and add more
+ *functionalities. \authors    Miguel Fernández Cortizas
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved
