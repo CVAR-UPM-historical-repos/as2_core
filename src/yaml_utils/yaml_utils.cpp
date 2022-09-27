@@ -55,23 +55,16 @@ std::vector<std::filesystem::path> find_yaml_files_inside(const std::filesystem:
 };
 
 // Recursive function to find the tag inside the yaml file
+
 YAML::Node find_tag_in_yaml_node(const YAML::Node &node, const std::string &tag) {
   if (node.IsSequence() || node.IsMap()) {
     for (auto &child : node) {
       if (child.first.as<std::string>() == tag) {
         return child.second;
       }
-    }
-    return YAML::Node();
-  };
-
-  YAML::Node search_tag_across_multiple_yaml_files(
-      const std::vector<std::filesystem::path> &yaml_files, const std::string &tag) {
-    for (const auto &yaml_file : yaml_files) {
-      YAML::Node config               = YAML::LoadFile(yaml_file.string());
-      YAML::Node available_modes_node = as2::find_tag_in_yaml_node(config, tag);
-      if (!(available_modes_node == YAML::Node())) {
-        return available_modes_node;
+      YAML::Node result = find_tag_in_yaml_node(child.first, tag);
+      if (!result.IsNull()) {
+        return result;
       }
     }
   }
