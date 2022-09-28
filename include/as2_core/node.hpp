@@ -65,13 +65,43 @@ namespace as2 {
  * @brief Basic Aerostack2 Node, it heritages all the functionality of an rclcpp::Node
  */
 
-class Node : public AS2_NODE_FATHER_TYPE {
+class Node : public AS2_NODE_FATHER_TYPE, std::enable_shared_from_this<as2::Node> {
 public:
+  typedef std::shared_ptr<as2::Node> SharedPtr;
   /**
    * @brief Construct a new Node object
    *
    * @param name Node name
    */
+
+  /**
+   * @brief Get a shared pointer to the node (rclcpp::Node)
+   * @return std::shared_ptr<rclcpp::Node>
+   */
+  std::shared_ptr<rclcpp::Node> rclcpp_node_shared_from_this() {
+    return this->std::enable_shared_from_this<rclcpp::Node>::shared_from_this();
+  }
+  /**
+   * @brief Get a shared pointer to the node (const rclcpp::Node)
+   * @return std::shared_ptr<const rclcpp::Node>
+   */
+  std::shared_ptr<const rclcpp::Node> rclcpp_node_shared_from_this() const {
+    return this->std::enable_shared_from_this<rclcpp::Node>::shared_from_this();
+  }
+  /**
+   * @brief Get a shared pointer to the node (as2::Node)
+   * @return std::shared_ptr<as2::Node>
+   */
+  std::shared_ptr<as2::Node> as2_node_shared_from_this() {
+    return this->std::enable_shared_from_this<as2::Node>::shared_from_this();
+  }
+  /**
+   * @brief Get a shared pointer to the node (const as2::Node)
+   * @return std::shared_ptr<const as2::Node>
+   */
+  std::shared_ptr<const as2::Node> as2_node_shared_from_this() const {
+    return this->std::enable_shared_from_this<as2::Node>::shared_from_this();
+  }
 
   Node(const std::string &name, const rclcpp::NodeOptions &options = rclcpp::NodeOptions())
       : AS2_NODE_FATHER_TYPE(name, options) {

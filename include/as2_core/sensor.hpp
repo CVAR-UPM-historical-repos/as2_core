@@ -79,7 +79,7 @@ public:
 
 protected:
   std::string topic_name_;
-  as2::Node *node_ptr_ = nullptr;
+  as2::Node::SharedPtr node_ptr_ = nullptr;
   float pub_freq_;
   rclcpp::TimerBase::SharedPtr timer_;
 
@@ -122,7 +122,7 @@ protected:
                            float qy,
                            float qz,
                            float qw) {
-    static tf2_ros::StaticTransformBroadcaster static_broadcaster((rclcpp::Node *)node_ptr_);
+    static tf2_ros::StaticTransformBroadcaster static_broadcaster((rclcpp::Node *)node_ptr_.get());
     geometry_msgs::msg::TransformStamped transformStamped;
     transformStamped.header.stamp            = rclcpp::Clock().now();
     transformStamped.header.frame_id         = parent_frame_id;
@@ -175,7 +175,7 @@ private:
 
 };  // class Sensor
 
-class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> {
+class Camera : public GenericSensor {
 public:
   Camera(const std::string &id, as2::Node *node_ptr);
   ~Camera();
