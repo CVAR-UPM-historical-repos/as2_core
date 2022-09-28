@@ -68,7 +68,9 @@ namespace as2 {
 namespace sensors {
 class GenericSensor {
 public:
-  GenericSensor(const std::string &topic_name, as2::Node *node_ptr, int pub_freq = -1)
+  GenericSensor(const std::string &topic_name,
+                const as2::Node::SharedPtr &node_ptr,
+                int pub_freq = -1)
       : node_ptr_(node_ptr), pub_freq_(pub_freq) {
     // check if topic already has "sensor_measurements "in the name
     // if not, add it
@@ -79,7 +81,7 @@ public:
 
 protected:
   std::string topic_name_;
-  as2::Node *node_ptr_ = nullptr;
+  as2::Node::SharedPtr node_ptr_ = nullptr;
   float pub_freq_;
   rclcpp::TimerBase::SharedPtr timer_;
 
@@ -122,7 +124,7 @@ protected:
                            float qy,
                            float qz,
                            float qw) {
-    static tf2_ros::StaticTransformBroadcaster static_broadcaster((rclcpp::Node *)node_ptr_);
+    static tf2_ros::StaticTransformBroadcaster static_broadcaster((rclcpp::Node *)node_ptr_.get());
     geometry_msgs::msg::TransformStamped transformStamped;
     transformStamped.header.stamp            = rclcpp::Clock().now();
     transformStamped.header.frame_id         = parent_frame_id;
@@ -146,7 +148,7 @@ protected:
 template <typename T>
 class Sensor : public GenericSensor {
 public:
-  Sensor(const std::string &id, as2::Node *node_ptr, int pub_freq = -1)
+  Sensor(const std::string &id, const as2::Node::SharedPtr &node_ptr, int pub_freq = -1)
       : GenericSensor(id, node_ptr, pub_freq) {
     sensor_publisher_ = node_ptr_->create_publisher<T>(this->topic_name_,
                                                        as2_names::topics::sensor_measurements::qos);
@@ -175,9 +177,9 @@ private:
 
 };  // class Sensor
 
-class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> {
+class Camera : public GenericSensor {
 public:
-  Camera(const std::string &id, as2::Node *node_ptr);
+  Camera(const std::string &id, const as2::Node::SharedPtr &node_ptr);
   ~Camera();
 
   void setup();
