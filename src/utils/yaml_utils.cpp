@@ -33,6 +33,7 @@
 #include "as2_core/utils/yaml_utils.hpp"
 
 namespace as2 {
+namespace yaml {
 std::filesystem::path get_project_export_path_from_xml_path(const std::filesystem::path &xml_path) {
   std::filesystem::path config_path = xml_path;
   while (config_path.has_parent_path() && config_path.parent_path() != "/") {
@@ -76,7 +77,7 @@ YAML::Node search_tag_across_multiple_yaml_files(
     const std::string &tag) {
   for (const auto &yaml_file : yaml_files) {
     YAML::Node config               = YAML::LoadFile(yaml_file.string());
-    YAML::Node available_modes_node = as2::find_tag_in_yaml_node(config, tag);
+    YAML::Node available_modes_node = as2::yaml::find_tag_in_yaml_node(config, tag);
     if (!(available_modes_node == YAML::Node())) {
       return available_modes_node;
     }
@@ -108,4 +109,6 @@ std::vector<uint8_t> parse_uint_from_string(const std::vector<std::string> &str_
   }
   return values;
 };
-};  // namespace as2
+
+}  // namespace yaml
+}  // namespace as2
