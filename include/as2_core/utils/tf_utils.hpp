@@ -80,6 +80,11 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame
                                                        double _pitch,
                                                        double _yaw);
 
+/**
+ * @brief  TfHandler class to handle the tf2_ros::Buffer and tf2_ros::TransformListener with ease
+ * inside a as2::Node class
+ */
+
 class TfHandler {
 private:
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
@@ -163,21 +168,7 @@ public:
    */
   geometry_msgs::msg::PoseStamped getPoseStamped(const std::string &target_frame,
                                                  const std::string &source_frame,
-                                                 const tf2::TimePoint &time = tf2::TimePointZero) {
-    auto transform =
-        tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame), time);
-    geometry_msgs::msg::PoseStamped pose;
-    pose.header.frame_id    = target_frame;
-    pose.header.stamp       = transform.header.stamp;
-    pose.pose.position.x    = transform.transform.translation.x;
-    pose.pose.position.y    = transform.transform.translation.y;
-    pose.pose.position.z    = transform.transform.translation.z;
-    pose.pose.orientation.x = transform.transform.rotation.x;
-    pose.pose.orientation.y = transform.transform.rotation.y;
-    pose.pose.orientation.z = transform.transform.rotation.z;
-    pose.pose.orientation.w = transform.transform.rotation.w;
-    return pose;
-  };
+                                                 const tf2::TimePoint &time = tf2::TimePointZero);
 
   /**
    * @brief obtain a TransformStamped from the TF_buffer
@@ -190,10 +181,7 @@ public:
   geometry_msgs::msg::TransformStamped getTransform(
       const std::string &target_frame,
       const std::string &source_frame,
-      const tf2::TimePoint &time = tf2::TimePointZero) {
-    return tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame),
-                                       time);
-  };
+      const tf2::TimePoint &time = tf2::TimePointZero);
 
 private:
   inline std::string formatFrameId(const std::string &_frame_id) {

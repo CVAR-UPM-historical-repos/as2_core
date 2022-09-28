@@ -143,5 +143,29 @@ nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
   return path_out;
 };
 
+geometry_msgs::msg::PoseStamped TfHandler::getPoseStamped(const std::string &target_frame,
+                                                          const std::string &source_frame,
+                                                          const tf2::TimePoint &time) {
+  auto transform =
+      tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame), time);
+  geometry_msgs::msg::PoseStamped pose;
+  pose.header.frame_id    = target_frame;
+  pose.header.stamp       = transform.header.stamp;
+  pose.pose.position.x    = transform.transform.translation.x;
+  pose.pose.position.y    = transform.transform.translation.y;
+  pose.pose.position.z    = transform.transform.translation.z;
+  pose.pose.orientation.x = transform.transform.rotation.x;
+  pose.pose.orientation.y = transform.transform.rotation.y;
+  pose.pose.orientation.z = transform.transform.rotation.z;
+  pose.pose.orientation.w = transform.transform.rotation.w;
+  return pose;
+};
+
+geometry_msgs::msg::TransformStamped TfHandler::getTransform(const std::string &target_frame,
+                                                             const std::string &source_frame,
+                                                             const tf2::TimePoint &time) {
+  return tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame),
+                                     time);
+};
 }  // namespace tf
 }  // namespace as2
