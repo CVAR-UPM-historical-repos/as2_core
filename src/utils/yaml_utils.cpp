@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#include "as2_core/yaml_utils/yaml_utils.hpp"
+#include "as2_core/utils/yaml_utils.hpp"
 
 namespace as2 {
 std::filesystem::path get_project_export_path_from_xml_path(const std::filesystem::path &xml_path) {

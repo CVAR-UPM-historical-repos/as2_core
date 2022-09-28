@@ -50,11 +50,6 @@
 #include "as2_msgs/msg/control_mode.hpp"
 #include "rclcpp/logging.hpp"
 
-// const std::string config_path =
-//     "/home/miguel/aerostack2_ws/src/aerostack2/stack_devel/controller_manager/"
-//     "controller_plugin_base/available_modes.yaml";
-//
-
 namespace as2 {
 
 // # ------------- mode codification (4 bits) ----------------------

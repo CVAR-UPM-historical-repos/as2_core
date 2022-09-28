@@ -186,10 +186,10 @@ bool AerialPlatform::sendCommand() {
 }
 
 void AerialPlatform::loadControlModes(const std::string& filename) {
-  std::vector<std::string> modes = as2::find_tag_in_yaml_file(filename, "available_modes");
+  std::vector<std::string> modes = as2::yaml::find_tag_in_yaml_file(filename, "available_modes");
 
   for (std::vector<std::string>::iterator it = modes.begin(); it != modes.end(); ++it) {
-    uint8_t m = as2::parse_uint_from_string(it->c_str());
+    uint8_t m = as2::yaml::parse_uint_from_string(it->c_str());
     as2::printControlMode(m);
     available_control_modes_.emplace_back(m);
   }

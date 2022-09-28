@@ -34,10 +34,10 @@
 #define TF_UTILS_HPP_
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-
 #include <geometry_msgs/msg/transform_stamped.hpp>
 
-// TODO: Add namespace to the library
+namespace as2 {
+namespace tf {
 
 /**
  * @brief Add namespace to the name of the Transform frame id
@@ -70,4 +70,6 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame
                                                        double _pitch,
                                                        double _yaw);
 
+}  // namespace tf
+}  // namespace as2
 #endif  // TF_UTILS_HPP_

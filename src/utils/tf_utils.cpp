@@ -30,10 +30,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#include "tf_utils.hpp"
+#include "as2_core/utils/tf_utils.hpp"
 
 // TODO: add namespace and documentation for this library, move this file inside a folder called
 // frame_utils
+
+namespace as2 {
+namespace tf {
 
 std::string generateTfName(std::string _namespace, std::string _frame_name) {
   std::string tf_name;
@@ -76,3 +79,5 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string& _frame
 
   return transformation;
 }
+}  // namespace tf
+}  // namespace as2
