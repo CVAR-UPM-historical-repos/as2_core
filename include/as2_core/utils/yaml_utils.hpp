@@ -44,6 +44,7 @@
 #include <vector>
 
 namespace as2 {
+namespace yaml {
 
 std::filesystem::path get_project_export_path_from_xml_path(const std::filesystem::path &xml_path);
 std::vector<std::filesystem::path> find_yaml_files_inside(const std::filesystem::path &dir);
@@ -100,5 +101,7 @@ std::vector<T> find_tag_from_project_exports_path(const std::filesystem::path &p
   return values;
 }
 
+}  // namespace yaml
 }  // namespace as2
+
 #endif  // __AS2_YAML_UTILS_HPP__

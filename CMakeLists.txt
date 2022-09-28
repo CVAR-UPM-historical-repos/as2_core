@@ -26,6 +26,7 @@ set(PROJECT_DEPENDENCIES
   std_srvs
   geometry_msgs
   tf2_geometry_msgs
+  tf2_ros
   tf2 
   Eigen3
   rclcpp_lifecycle
@@ -49,12 +50,12 @@ set(SOURCE_CPP_FILES
   src/sensor.cpp
   src/aerial_platform.cpp
   src/platform_state_machine.cpp
-  src/tf_utils.cpp
   src/rate.cpp
   src/core_functions.cpp
-  src/control_mode_utils/control_mode_utils.cpp
-  src/yaml_utils/yaml_utils.cpp
-  src/frame_utils/frame_utils.cpp
+  src/utils/control_mode_utils.cpp
+  src/utils/tf_utils.cpp
+  src/utils/yaml_utils.cpp
+  src/utils/frame_utils.cpp
 )
 
 add_library(${PROJECT_NAME} ${SOURCE_CPP_FILES} )
