@@ -68,7 +68,9 @@ namespace as2 {
 namespace sensors {
 class GenericSensor {
 public:
-  GenericSensor(const std::string &topic_name, as2::Node *node_ptr, int pub_freq = -1)
+  GenericSensor(const std::string &topic_name,
+                const as2::Node::SharedPtr &node_ptr,
+                int pub_freq = -1)
       : node_ptr_(node_ptr), pub_freq_(pub_freq) {
     // check if topic already has "sensor_measurements "in the name
     // if not, add it
@@ -146,7 +148,7 @@ protected:
 template <typename T>
 class Sensor : public GenericSensor {
 public:
-  Sensor(const std::string &id, as2::Node *node_ptr, int pub_freq = -1)
+  Sensor(const std::string &id, const as2::Node::SharedPtr &node_ptr, int pub_freq = -1)
       : GenericSensor(id, node_ptr, pub_freq) {
     sensor_publisher_ = node_ptr_->create_publisher<T>(this->topic_name_,
                                                        as2_names::topics::sensor_measurements::qos);
@@ -177,7 +179,7 @@ private:
 
 class Camera : public GenericSensor {
 public:
-  Camera(const std::string &id, as2::Node *node_ptr);
+  Camera(const std::string &id, const as2::Node::SharedPtr &node_ptr);
   ~Camera();
 
   void setup();
