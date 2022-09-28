@@ -33,6 +33,7 @@
 #ifndef TF_UTILS_HPP_
 #define TF_UTILS_HPP_
 
+#include <tf2/time.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <geometry_msgs/msg/point_stamped.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
@@ -96,6 +97,12 @@ public:
   };
 
   /**
+   * @brief Get the tf buffer object
+   * @return std::shared_ptr<tf2_ros::Buffer>
+   */
+  std::shared_ptr<tf2_ros::Buffer> getTfBuffer() const { return tf_buffer_; }
+
+  /**
    * @brief convert a geometry_msgs::msg::PointStamped from one frame to another
    * @param _point a geometry_msgs::msg::PointStamped
    * @param _target_frame the target frame
@@ -145,6 +152,48 @@ public:
    * @throw tf2::TransformException if the transform is not available
    */
   nav_msgs::msg::Path convert(const nav_msgs::msg::Path &_path, const std::string &target_frame);
+
+  /**
+   * @brief obtain a PoseStamped from the TF_buffer
+   * @param target_frame the target frame
+   * @param source_frame the source frame
+   * @param time the time of the transform
+   * @return geometry_msgs::msg::PoseStamped
+   * @throw tf2::TransformException if the transform is not available
+   */
+  geometry_msgs::msg::PoseStamped getPoseStamped(const std::string &target_frame,
+                                                 const std::string &source_frame,
+                                                 const tf2::TimePoint &time = tf2::TimePointZero) {
+    auto transform =
+        tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame), time);
+    geometry_msgs::msg::PoseStamped pose;
+    pose.header.frame_id    = target_frame;
+    pose.header.stamp       = transform.header.stamp;
+    pose.pose.position.x    = transform.transform.translation.x;
+    pose.pose.position.y    = transform.transform.translation.y;
+    pose.pose.position.z    = transform.transform.translation.z;
+    pose.pose.orientation.x = transform.transform.rotation.x;
+    pose.pose.orientation.y = transform.transform.rotation.y;
+    pose.pose.orientation.z = transform.transform.rotation.z;
+    pose.pose.orientation.w = transform.transform.rotation.w;
+    return pose;
+  };
+
+  /**
+   * @brief obtain a TransformStamped from the TF_buffer
+   * @param target_frame the target frame
+   * @param source_frame the source frame
+   * @param time the time of the transform
+   * @return geometry_msgs::msg::TransformStamped
+   * @throw tf2::TransformException if the transform is not available
+   */
+  geometry_msgs::msg::TransformStamped getTransform(
+      const std::string &target_frame,
+      const std::string &source_frame,
+      const tf2::TimePoint &time = tf2::TimePointZero) {
+    return tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame),
+                                       time);
+  };
 
 private:
   inline std::string formatFrameId(const std::string &_frame_id) {

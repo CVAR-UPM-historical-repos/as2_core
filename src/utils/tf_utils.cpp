@@ -33,9 +33,6 @@
 #include "as2_core/utils/tf_utils.hpp"
 #include <tf2/convert.h>
 
-// TODO: add namespace and documentation for this library, move this file inside a folder called
-// frame_utils
-
 namespace as2 {
 namespace tf {
 
@@ -106,11 +103,15 @@ geometry_msgs::msg::PoseStamped TfHandler::convert(const geometry_msgs::msg::Pos
 geometry_msgs::msg::TwistStamped TfHandler::convert(const geometry_msgs::msg::TwistStamped &_twist,
                                                     const std::string &target_frame) {
   geometry_msgs::msg::TwistStamped twist_out;
-  const auto frame = formatFrameId(target_frame);
-  tf2::doTransform(_twist, twist_out,
-                   tf_buffer_->lookupTransform(frame, _twist.header.frame_id, _twist.header.stamp));
-  twist_out.header.frame_id = frame;
-  twist_out.header.stamp    = _twist.header.stamp;
+  geometry_msgs::msg::Vector3Stamped vector_out;
+
+  vector_out.header = _twist.header;
+  vector_out.vector = _twist.twist.linear;
+  // transform linear speed
+  vector_out              = convert(vector_out, target_frame);
+  twist_out.header        = vector_out.header;
+  twist_out.twist.linear  = vector_out.vector;
+  twist_out.twist.angular = _twist.twist.angular;
   return twist_out;
 };
 
