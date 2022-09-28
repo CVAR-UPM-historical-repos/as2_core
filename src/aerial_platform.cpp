@@ -190,7 +190,7 @@ void AerialPlatform::loadControlModes(const std::string& filename) {
 
   for (std::vector<std::string>::iterator it = modes.begin(); it != modes.end(); ++it) {
     uint8_t m = as2::yaml::parse_uint_from_string(it->c_str());
-    as2::printControlMode(m);
+    as2::control_mode::printControlMode(m);
     available_control_modes_.emplace_back(m);
   }
 }

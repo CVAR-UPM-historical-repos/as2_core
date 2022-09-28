@@ -51,6 +51,7 @@
 #include "rclcpp/logging.hpp"
 
 namespace as2 {
+namespace control_mode {
 
 // # ------------- mode codification (4 bits) ----------------------
 // #
@@ -87,6 +88,7 @@ std::string controlModeToString(const as2_msgs::msg::ControlMode &mode);
 void printControlMode(const as2_msgs::msg::ControlMode &mode);
 void printControlMode(uint8_t control_mode_uint8t);
 
+}  // namespace control_mode
 }  // namespace as2
 
 #endif  // __CONTROL_MODE_UTILS_HPP__

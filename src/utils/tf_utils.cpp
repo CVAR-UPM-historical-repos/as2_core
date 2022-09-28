@@ -31,6 +31,7 @@
  ********************************************************************************/
 
 #include "as2_core/utils/tf_utils.hpp"
+#include <tf2/convert.h>
 
 // TODO: add namespace and documentation for this library, move this file inside a folder called
 // frame_utils
@@ -55,8 +56,8 @@ std::string generateTfName(std::string _namespace, std::string _frame_name) {
   }
 }
 
-geometry_msgs::msg::TransformStamped getTransformation(const std::string& _frame_id,
-                                                       const std::string& _child_frame_id,
+geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame_id,
+                                                       const std::string &_child_frame_id,
                                                        double _translation_x,
                                                        double _translation_y,
                                                        double _translation_z,
@@ -79,5 +80,67 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string& _frame
 
   return transformation;
 }
+
+geometry_msgs::msg::PointStamped TfHandler::convert(const geometry_msgs::msg::PointStamped &_point,
+                                                    const std::string &target_frame) {
+  geometry_msgs::msg::PointStamped point_out;
+  const auto frame = formatFrameId(target_frame);
+  tf2::doTransform(_point, point_out,
+                   tf_buffer_->lookupTransform(frame, _point.header.frame_id, _point.header.stamp));
+  point_out.header.stamp    = _point.header.stamp;
+  point_out.header.frame_id = frame;
+  return point_out;
+};
+
+geometry_msgs::msg::PoseStamped TfHandler::convert(const geometry_msgs::msg::PoseStamped &_pose,
+                                                   const std::string &target_frame) {
+  geometry_msgs::msg::PoseStamped pose_out;
+  const auto frame = formatFrameId(target_frame);
+  tf2::doTransform(_pose, pose_out,
+                   tf_buffer_->lookupTransform(frame, _pose.header.frame_id, _pose.header.stamp));
+  pose_out.header.frame_id = frame;
+  pose_out.header.stamp    = _pose.header.stamp;
+  return pose_out;
+};
+
+geometry_msgs::msg::TwistStamped TfHandler::convert(const geometry_msgs::msg::TwistStamped &_twist,
+                                                    const std::string &target_frame) {
+  geometry_msgs::msg::TwistStamped twist_out;
+  const auto frame = formatFrameId(target_frame);
+  tf2::doTransform(_twist, twist_out,
+                   tf_buffer_->lookupTransform(frame, _twist.header.frame_id, _twist.header.stamp));
+  twist_out.header.frame_id = frame;
+  twist_out.header.stamp    = _twist.header.stamp;
+  return twist_out;
+};
+
+geometry_msgs::msg::Vector3Stamped TfHandler::convert(
+    const geometry_msgs::msg::Vector3Stamped &_vector,
+    const std::string &target_frame) {
+  geometry_msgs::msg::Vector3Stamped vector_out;
+  const auto frame = formatFrameId(target_frame);
+  tf2::doTransform(
+      _vector, vector_out,
+      tf_buffer_->lookupTransform(frame, _vector.header.frame_id, _vector.header.stamp));
+  vector_out.header.frame_id = frame;
+  vector_out.header.stamp    = _vector.header.stamp;
+  return vector_out;
+};
+
+nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
+                                       const std::string &target_frame) {
+  nav_msgs::msg::Path path_out;
+  const auto frame = formatFrameId(target_frame);
+  for (auto &pose : _path.poses) {
+    geometry_msgs::msg::PoseStamped pose_out;
+    tf2::doTransform(pose, pose_out,
+                     tf_buffer_->lookupTransform(frame, pose.header.frame_id, pose.header.stamp));
+    path_out.poses.push_back(pose_out);
+  }
+  path_out.header.frame_id = frame;
+  path_out.header.stamp    = _path.header.stamp;
+  return path_out;
+};
+
 }  // namespace tf
 }  // namespace as2

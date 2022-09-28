@@ -34,7 +34,16 @@
 #define TF_UTILS_HPP_
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <geometry_msgs/msg/point_stamped.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
+#include <geometry_msgs/msg/vector3_stamped.hpp>
+#include <nav_msgs/msg/path.hpp>
+
+#include "as2_core/node.hpp"
+#include "tf2_ros/buffer.h"
+#include "tf2_ros/transform_listener.h"
 
 namespace as2 {
 namespace tf {
@@ -69,6 +78,83 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame
                                                        double _roll,
                                                        double _pitch,
                                                        double _yaw);
+
+class TfHandler {
+private:
+  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+  std::shared_ptr<as2::Node> node_;
+
+public:
+  /**
+   * @brief Construct a new Tf Handler object
+   * @param _node an as2::Node object
+   */
+  TfHandler(const std::shared_ptr<as2::Node> &_node) : node_(_node) {
+    tf_buffer_   = std::make_shared<tf2_ros::Buffer>(node_->get_clock());
+    tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+  };
+
+  /**
+   * @brief convert a geometry_msgs::msg::PointStamped from one frame to another
+   * @param _point a geometry_msgs::msg::PointStamped
+   * @param _target_frame the target frame
+   * @return geometry_msgs::msg::PointStamped in the target frame
+   * @throw tf2::TransformException if the transform is not available
+   */
+  geometry_msgs::msg::PointStamped convert(const geometry_msgs::msg::PointStamped &_point,
+                                           const std::string &target_frame);
+
+  /**
+   * @brief convert a geometry_msgs::msg::PoseStamped from one frame to another
+   * @param _pose a geometry_msgs::msg::PoseStamped
+   * @param _target_frame the target frame
+   * @return geometry_msgs::msg::PoseStamped in the target frame
+   * @throw tf2::TransformException if the transform is not available
+   */
+
+  geometry_msgs::msg::PoseStamped convert(const geometry_msgs::msg::PoseStamped &_pose,
+                                          const std::string &target_frame);
+
+  /**
+   * @brief convert a geometry_msgs::msg::TwistStamped from one frame to another (only the linear
+   * part will be converted, the angular part will be maintained)
+   * @param _twist a geometry_msgs::msg::TwistStamped
+   * @param _target_frame the target frame
+   * @return geometry_msgs::msg::TwistStamped in the target frame
+   * @throw tf2::TransformException if the transform is not available
+   */
+  geometry_msgs::msg::TwistStamped convert(const geometry_msgs::msg::TwistStamped &_twist,
+                                           const std::string &target_frame);
+
+  /**
+   * @brief convert a geometry_msgs::msg::Vector3Stamped from one frame to another
+   * @param _vector a geometry_msgs::msg::Vector3Stamped
+   * @param _target_frame the target frame
+   * @return geometry_msgs::msg::Vector3Stamped in the target frame
+   * @throw tf2::TransformException if the transform is not available
+   */
+  geometry_msgs::msg::Vector3Stamped convert(const geometry_msgs::msg::Vector3Stamped &_vector,
+                                             const std::string &target_frame);
+
+  /**
+   * @brief convert a nav_msgs::msg::Path from one frame to another
+   * @param _path a nav_msgs::msg::Path
+   * @param _target_frame the target frame
+   * @return nav_msgs::msg::Path in the target frame
+   * @throw tf2::TransformException if the transform is not available
+   */
+  nav_msgs::msg::Path convert(const nav_msgs::msg::Path &_path, const std::string &target_frame);
+
+private:
+  inline std::string formatFrameId(const std::string &_frame_id) {
+    std::string frame_id = _frame_id;
+    if (_frame_id[0] != '/') {
+      frame_id = generateTfName(node_->get_namespace(), _frame_id);
+    }
+    return frame_id;
+  };
+};  // namespace tf
 
 }  // namespace tf
 }  // namespace as2
