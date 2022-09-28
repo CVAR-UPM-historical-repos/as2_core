@@ -95,6 +95,8 @@ void Camera::setParameters(const sensor_msgs::msg::CameraInfo &_camera_info) {
   camera_info_available_ = true;
 }
 
-std::shared_ptr<rclcpp::Node> Camera::getSelfPtr() { return node_ptr_->shared_from_this(); }
+std::shared_ptr<rclcpp::Node> Camera::getSelfPtr() {
+  return node_ptr_->rclcpp_node_shared_from_this();
+}
 }  // namespace sensors
 };  // namespace as2
