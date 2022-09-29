@@ -43,7 +43,7 @@
 
 TEST(PlatformStateMachineTest, Normal_functionality) {
   as2::Node test_node("test_node");
-  as2::PlatformStateMachine state_machine(test_node.as2_node_shared_from_this());
+  as2::PlatformStateMachine state_machine(&test_node);
   EXPECT_EQ(state_machine.getState().state, as2_msgs::msg::PlatformStatus::DISARMED);
   state_machine.processEvent(as2_msgs::msg::PlatformStateMachineEvent::ARM);
   EXPECT_EQ(state_machine.getState().state, as2_msgs::msg::PlatformStatus::LANDED);
@@ -62,7 +62,7 @@ TEST(PlatformStateMachineTest, Normal_functionality) {
 TEST(PlatformStateMachineTest, EmergencyTest) {
   as2::Node test_node("test_node");
   for (int i = -1; i < (int)as2_msgs::msg::PlatformStatus::LANDING; i++) {
-    as2::PlatformStateMachine state_machine(test_node.as2_node_shared_from_this());
+    as2::PlatformStateMachine state_machine(&test_node);
     state_machine.setState(i);
     state_machine.processEvent(as2_msgs::msg::PlatformStateMachineEvent::EMERGENCY);
     EXPECT_EQ(state_machine.getState().state, as2_msgs::msg::PlatformStatus::EMERGENCY);
@@ -71,7 +71,7 @@ TEST(PlatformStateMachineTest, EmergencyTest) {
 
 TEST(PlatformStateMachineTest, CorrectFSMActivation) {
   as2::Node test_node("test_node");
-  as2::PlatformStateMachine state_machine(test_node.as2_node_shared_from_this());
+  as2::PlatformStateMachine state_machine(&test_node);
   EXPECT_EQ(state_machine.getState().state, as2_msgs::msg::PlatformStatus::DISARMED);
   state_machine.processEvent(as2_msgs::msg::PlatformStateMachineEvent::ARM);
   EXPECT_EQ(state_machine.getState().state, as2_msgs::msg::PlatformStatus::LANDED);

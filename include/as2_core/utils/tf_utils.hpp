@@ -89,14 +89,14 @@ class TfHandler {
 private:
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
-  std::shared_ptr<as2::Node> node_;
+  as2::Node *node_;
 
 public:
   /**
    * @brief Construct a new Tf Handler object
    * @param _node an as2::Node object
    */
-  TfHandler(const std::shared_ptr<as2::Node> &_node) : node_(_node) {
+  TfHandler(as2::Node *_node) : node_(_node) {
     tf_buffer_   = std::make_shared<tf2_ros::Buffer>(node_->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
   };

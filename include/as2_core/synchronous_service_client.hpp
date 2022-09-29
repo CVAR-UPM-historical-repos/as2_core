@@ -53,7 +53,7 @@ class SynchronousServiceClient {
   typedef typename ServiceT::Request RequestT;
   typedef typename ServiceT::Response ResponseT;
   std::string service_name_;
-  std::shared_ptr<as2::Node> node_;
+  as2::Node *node_;
 
   rclcpp::CallbackGroup::SharedPtr callback_group_;
   rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
@@ -66,7 +66,7 @@ public:
    * @brief Constructor
    * @param service_name Name of the service
    */
-  SynchronousServiceClient(std::string service_name, as2::Node::SharedPtr node)
+  SynchronousServiceClient(std::string service_name, as2::Node *node)
       : service_name_(service_name), node_(node) {
     callback_group_ =
         node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive, false);
