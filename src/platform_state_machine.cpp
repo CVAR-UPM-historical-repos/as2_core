@@ -33,7 +33,7 @@
 #include "platform_state_machine.hpp"
 
 namespace as2 {
-PlatformStateMachine::PlatformStateMachine(const as2::Node::SharedPtr &node) : node_ptr_(node) {
+PlatformStateMachine::PlatformStateMachine(as2::Node *node) : node_ptr_(node) {
   state_.state = as2_msgs::msg::PlatformStatus::DISARMED;
   defineTransitions();
 
