@@ -31,10 +31,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#include "as2_core/frame_utils/frame_utils.hpp"
+#include "as2_core/utils/frame_utils.hpp"
 
 namespace as2 {
-namespace FrameUtils {
+namespace frame {
 Eigen::Vector3d convertENUtoFLU(const float roll_angle,
                                 const float pitch_angle,
                                 const float yaw_angle,
@@ -180,6 +180,6 @@ double getYawFromQuaternion(const Eigen::Quaterniond &quaternion) {
 
 double getVector2DAngle(const double &x, const double &y) { return atan2f(y, x); }
 
-};  // namespace FrameUtils
+};  // namespace frame
 
 };  // namespace as2

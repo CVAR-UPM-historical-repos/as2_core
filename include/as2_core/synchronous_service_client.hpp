@@ -53,7 +53,11 @@ class SynchronousServiceClient {
   typedef typename ServiceT::Request RequestT;
   typedef typename ServiceT::Response ResponseT;
   std::string service_name_;
-  std::string node_name_;
+  as2::Node *node_;
+
+  rclcpp::CallbackGroup::SharedPtr callback_group_;
+  rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
+  std::shared_ptr<rclcpp::Client<ServiceT>> service_client_;
 
 public:
   using SharedPtr = std::shared_ptr<SynchronousServiceClient<ServiceT>>;
@@ -62,11 +66,13 @@ public:
    * @brief Constructor
    * @param service_name Name of the service
    */
-  SynchronousServiceClient(std::string service_name) {
-    service_name_ = service_name;
-    node_name_    = service_name;
-    // replace all '/' with '_' in name
-    std::replace(node_name_.begin(), node_name_.end(), '/', '_');
+  SynchronousServiceClient(std::string service_name, as2::Node *node)
+      : service_name_(service_name), node_(node) {
+    callback_group_ =
+        node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive, false);
+    callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
+    service_client_ = node_->create_client<ServiceT>(service_name, rmw_qos_profile_services_default,
+                                                     callback_group_);
   }
 
   /**
@@ -96,34 +102,31 @@ public:
   bool sendRequest(const std::shared_ptr<RequestT> &req,
                    std::shared_ptr<ResponseT> &resp,
                    int wait_time = 0) {
-    auto node   = std::make_shared<rclcpp::Node>(node_name_);
-    auto client = node->create_client<ServiceT>(service_name_);
-
     if (wait_time <= 0) {
-      while (!client->wait_for_service(std::chrono::seconds(1))) {
+      while (!service_client_->wait_for_service(std::chrono::seconds(1))) {
         if (!rclcpp::ok()) {
-          RCLCPP_ERROR(node->get_logger(), "interrupted while waiting for the service. exiting.");
+          RCLCPP_ERROR(node_->get_logger(), "interrupted while waiting for the service. exiting.");
           return false;
         }
-        RCLCPP_INFO(node->get_logger(), "service: %s not available, waiting again...",
+        RCLCPP_INFO(node_->get_logger(), "service: %s not available, waiting again...",
                     service_name_.c_str());
       }
     } else {
-      if (!client->wait_for_service(std::chrono::seconds(wait_time))) {
+      if (!service_client_->wait_for_service(std::chrono::seconds(wait_time))) {
         if (!rclcpp::ok()) {
-          RCLCPP_ERROR(node->get_logger(), "interrupted while waiting for the service. exiting.");
+          RCLCPP_ERROR(node_->get_logger(), "interrupted while waiting for the service. exiting.");
           return false;
         }
-        RCLCPP_WARN(node->get_logger(), "service: %s not available, returning False ",
+        RCLCPP_WARN(node_->get_logger(), "service: %s not available, returning False ",
                     service_name_.c_str());
         return false;
       }
     }
 
-    auto result = client->async_send_request(req);
-    if (rclcpp::spin_until_future_complete(node, result, std::chrono::seconds(1)) !=
+    auto result = service_client_->async_send_request(req);
+    if (callback_group_executor_.spin_until_future_complete(result) !=
         rclcpp::FutureReturnCode::SUCCESS) {
-      RCLCPP_WARN(node->get_logger(), "failed to receive response from service '%s'",
+      RCLCPP_WARN(node_->get_logger(), "failed to receive response from service '%s'",
                   service_name_.c_str());
       return false;
     }

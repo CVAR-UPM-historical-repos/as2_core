@@ -34,12 +34,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#include "as2_core/control_mode_utils/control_mode_utils.hpp"
+#include "as2_core/utils/control_mode_utils.hpp"
 
 #include <rclcpp/logger.hpp>
 #include <rclcpp/logging.hpp>
 
 namespace as2 {
+namespace control_mode {
 
 uint8_t convertAS2ControlModeToUint8t(const as2_msgs::msg::ControlMode &mode) {
   // # ------------- mode codification (4 bits) ----------------------
@@ -294,4 +295,5 @@ void printControlMode(uint8_t control_mode_uint8t) {
   printControlMode(convertUint8tToAS2ControlMode(control_mode_uint8t));
 }
 
-};  // namespace as2
+};  // namespace control_mode
+}  // namespace as2

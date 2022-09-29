@@ -175,7 +175,7 @@ private:
 
 };  // class Sensor
 
-class Camera : public GenericSensor, std::enable_shared_from_this<rclcpp::Node> {
+class Camera : public GenericSensor {
 public:
   Camera(const std::string &id, as2::Node *node_ptr);
   ~Camera();

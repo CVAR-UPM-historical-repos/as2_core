@@ -67,6 +67,7 @@ namespace as2 {
 
 class Node : public AS2_NODE_FATHER_TYPE {
 public:
+  // typedef std::shared_ptr<as2::Node> SharedPtr;
   /**
    * @brief Construct a new Node object
    *

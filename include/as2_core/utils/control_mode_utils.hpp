@@ -50,12 +50,8 @@
 #include "as2_msgs/msg/control_mode.hpp"
 #include "rclcpp/logging.hpp"
 
-// const std::string config_path =
-//     "/home/miguel/aerostack2_ws/src/aerostack2/stack_devel/controller_manager/"
-//     "controller_plugin_base/available_modes.yaml";
-//
-
 namespace as2 {
+namespace control_mode {
 
 // # ------------- mode codification (4 bits) ----------------------
 // #
@@ -92,6 +88,7 @@ std::string controlModeToString(const as2_msgs::msg::ControlMode &mode);
 void printControlMode(const as2_msgs::msg::ControlMode &mode);
 void printControlMode(uint8_t control_mode_uint8t);
 
+}  // namespace control_mode
 }  // namespace as2
 
 #endif  // __CONTROL_MODE_UTILS_HPP__

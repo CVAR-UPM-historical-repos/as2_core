@@ -41,7 +41,7 @@
 #include <geometry_msgs/msg/quaternion.hpp>
 
 namespace as2 {
-namespace FrameUtils {
+namespace frame {
 /**
  * @brief Convert ENU (east, north, up) to FLU (forward, left, up) frame.
  *
@@ -232,7 +232,7 @@ double getYawFromQuaternion(const Eigen::Quaterniond &quaternion);
  */
 double getVector2DAngle(const double &x, const double &y);
 
-};  // namespace FrameUtils
+};  // namespace frame
 
 };  // namespace as2
 

@@ -50,7 +50,6 @@
 #include "as2_msgs/msg/thrust.hpp"
 #include "as2_msgs/srv/list_control_modes.hpp"
 #include "as2_msgs/srv/set_control_mode.hpp"
-#include "control_mode_utils/control_mode_utils.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
 #include "nav_msgs/msg/odometry.hpp"
@@ -59,7 +58,8 @@
 #include "rclcpp/publisher_options.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_srvs/srv/set_bool.hpp"
-#include "yaml_utils/yaml_utils.hpp"
+#include "utils/control_mode_utils.hpp"
+#include "utils/yaml_utils.hpp"
 
 namespace as2 {
 // TODO: Rethink how this parameters are used and how they are set.
