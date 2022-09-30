@@ -59,7 +59,7 @@
 
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
-#include "tf_utils.hpp"
+#include "utils/tf_utils.hpp"
 
 // camera
 #include <image_transport/image_transport.hpp>
@@ -139,8 +139,8 @@ protected:
     transformStamped.transform.rotation.z    = qz;
     transformStamped.transform.rotation.w    = qw;
     static_broadcaster.sendTransform(transformStamped);
-    RCLCPP_INFO(node_ptr_->get_logger(), "Static transform for %s to %s published",
-                frame_id.c_str(), parent_frame_id.c_str());
+    RCLCPP_INFO(node_ptr_->get_logger(), "Static transform published: %s -> %s",
+                parent_frame_id.c_str(), frame_id.c_str());
   }
 
   void registerSensor(){};

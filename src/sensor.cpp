@@ -54,7 +54,7 @@ void Camera::setup() {
   it_publisher_ = image_transport_.advertise(topic_name_, 1);
 
   camera_frame_ = camera_name_ + "/" + camera_link_;
-  camera_frame_ = generateTfName(node_ptr_->get_namespace(), camera_frame_);
+  camera_frame_ = as2::tf::generateTfName(node_ptr_->get_namespace(), camera_frame_);
   setup_ = false;
 }
 
