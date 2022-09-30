@@ -56,8 +56,8 @@ namespace tf {
  * @param _frame_name
  * @return std::string namespace/frame_id
  */
-std::string generateTfName(std::string _namespace, std::string _frame_name);
-
+std::string generateTfName(const std::string &_namespace, const std::string &_frame_name);
+std::string generateTfName(rclcpp::Node *node, std::string _frame_name);
 /**
  * @brief Generate a Transform message from translation and rotation in Euler angles
  *

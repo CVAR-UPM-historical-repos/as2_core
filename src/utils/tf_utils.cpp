@@ -36,21 +36,25 @@
 namespace as2 {
 namespace tf {
 
-std::string generateTfName(std::string _namespace, std::string _frame_name) {
-  std::string tf_name;
+std::string generateTfName(rclcpp::Node *node, std::string _frame_name) {
+  return generateTfName(node->get_namespace(), _frame_name);
+}
 
-  if (_namespace.find("/") == 0) {
-    _namespace = _namespace.substr(1);
+std::string generateTfName(const std::string &_namespace, const std::string &_frame_name) {
+  if (!_frame_name.size()) {
+    throw std::runtime_error("Empty frame name");
   }
-  if (_frame_name.find("/") == 0) {
-    _frame_name = _frame_name.substr(1);
+  if (_frame_name[0] == '/') {
+    return _frame_name.substr(1);
   }
-
-  if (_namespace != "") {
-    return _namespace + "/" + _frame_name;
-  } else {
+  if (!_namespace.size()) {
+    RCLCPP_WARN(rclcpp::get_logger("tf_utils"),
+                "The frame name [%s] is not absolute and the node namespace is empty. This could "
+                "lead to conflicts.",
+                _frame_name.c_str());
     return _frame_name;
   }
+  return _namespace + "/" + _frame_name;
 }
 
 geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame_id,
