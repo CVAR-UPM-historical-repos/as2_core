@@ -42,6 +42,7 @@ namespace sensors {
 Camera::Camera(const std::string &id, as2::Node *node_ptr) : GenericSensor(id, node_ptr) {
   camera_info_publisher_ =
       node_ptr_->create_publisher<sensor_msgs::msg::CameraInfo>(topic_name_ + "/info", 10);
+  camera_name_ = id;
 }
 
 Camera::~Camera(){};
@@ -52,6 +53,8 @@ void Camera::setup() {
 
   it_publisher_ = image_transport_.advertise(topic_name_, 1);
 
+  camera_frame_ = camera_name_ + "/" + camera_link_;
+  camera_frame_ = as2::tf::generateTfName(node_ptr_->get_namespace(), camera_frame_);
   setup_ = false;
 }
 
@@ -65,6 +68,18 @@ void Camera::updateData(const sensor_msgs::msg::Image &_img) {
   } else {
     publishCameraData(_img);
   }
+}
+
+void Camera::updateData(const cv::Mat &_img) {
+  sensor_msgs::msg::Image img_msg;
+  cv_bridge::CvImage cv_image;
+  cv_image.header.stamp    = node_ptr_->now();
+  cv_image.header.frame_id = camera_frame_;
+  cv_image.encoding        = encoding_;
+  cv_image.image           = _img;
+  cv_image.toImageMsg(img_msg);
+
+  updateData(img_msg);
 }
 
 void Camera::publishCameraData(const sensor_msgs::msg::Image &_msg) {
@@ -90,11 +105,15 @@ void Camera::loadParameters(const std::string &file) {
   // read configuration file
 }
 
-void Camera::setParameters(const sensor_msgs::msg::CameraInfo &_camera_info) {
+void Camera::setParameters(const sensor_msgs::msg::CameraInfo &_camera_info, const std::string &_encoding, const std::string &_camera_model) {
   camera_info_data_      = _camera_info;
   camera_info_available_ = true;
+
+  encoding_      = _encoding;
+  camera_model_  = _camera_model;
 }
 
 std::shared_ptr<rclcpp::Node> Camera::getSelfPtr() { return node_ptr_->shared_from_this(); }
+
 }  // namespace sensors
 };  // namespace as2

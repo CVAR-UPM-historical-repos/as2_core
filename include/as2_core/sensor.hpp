@@ -57,6 +57,10 @@
 #include "sensor_msgs/msg/nav_sat_fix.hpp"
 #include "sensor_msgs/msg/range.hpp"
 
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/opencv.hpp>
+#include "utils/tf_utils.hpp"
+
 // camera
 #include <image_transport/image_transport.hpp>
 
@@ -135,8 +139,8 @@ protected:
     transformStamped.transform.rotation.z    = qz;
     transformStamped.transform.rotation.w    = qw;
     static_broadcaster.sendTransform(transformStamped);
-    RCLCPP_INFO(node_ptr_->get_logger(), "Static transform for %s to %s published",
-                frame_id.c_str(), parent_frame_id.c_str());
+    RCLCPP_INFO(node_ptr_->get_logger(), "Static transform published: %s -> %s",
+                parent_frame_id.c_str(), frame_id.c_str());
   }
 
   void registerSensor(){};
@@ -182,9 +186,10 @@ public:
 
   void setup();
   void updateData(const sensor_msgs::msg::Image &_img);
+  void updateData(const cv::Mat &_img);
   void publishCameraData(const sensor_msgs::msg::Image &msg);  // private
   void loadParameters(const std::string &file);
-  void setParameters(const sensor_msgs::msg::CameraInfo &_camera_info);
+  void setParameters(const sensor_msgs::msg::CameraInfo &_camera_info, const std::string &_encoding, const std::string &_camera_model);
 
   void publishRectifiedImage(const sensor_msgs::msg::Image &msg);
   // void publishCompressedImage(const sensor_msgs::msg::Image &msg);
@@ -221,13 +226,13 @@ public:
     setStaticTransform_(frame_id, parent_frame_id, x, y, z, q.x(), q.y(), q.z(), q.w());
 
     // if frame_id does not contain "camera_link"
-    if (frame_id.find("camera_link") == std::string::npos) {
+    if (frame_id.find(camera_link_) == std::string::npos) {
       // set the static transform for the camera_link frame rotating from FLU  to RDF
       yaw   = -M_PI / 2.0f;
       pitch = 0;
       roll  = -M_PI / 2.0f;
       q.setRPY(roll, pitch, yaw);
-      setStaticTransform_(frame_id + "/camera_link", frame_id, 0, 0, 0, q.x(), q.y(), q.z(), q.w());
+      setStaticTransform_(frame_id + "/" + camera_link_, frame_id, 0, 0, 0, q.x(), q.y(), q.z(), q.w());
     }
   };
 
@@ -244,6 +249,12 @@ private:
 
   bool setup_                 = true;
   bool camera_info_available_ = false;
+
+  std::string camera_name_;
+  std::string camera_link_ = "camera_link";
+  std::string camera_frame_;
+  std::string encoding_;
+  std::string camera_model_;
 
 };  // class CameraSensor
 
