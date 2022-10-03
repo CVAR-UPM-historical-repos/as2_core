@@ -54,6 +54,9 @@ std::string generateTfName(const std::string &_namespace, const std::string &_fr
                 _frame_name.c_str());
     return _frame_name;
   }
+  if (_namespace[0] == '/') {
+    return _namespace.substr(1) + "/" + _frame_name;
+  }
   return _namespace + "/" + _frame_name;
 }
 
