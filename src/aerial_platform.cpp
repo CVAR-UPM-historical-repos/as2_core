@@ -42,13 +42,6 @@ AerialPlatform::AerialPlatform()
 
   this->declare_parameter<float>("cmd_freq", 100.0);
   this->declare_parameter<float>("info_freq", 10.0);
-  try {
-    this->declare_parameter<bool>("simulation_mode");
-  } catch (const rclcpp::ParameterTypeException& e) {
-    RCLCPP_FATAL(this->get_logger(),
-                 "Launch argument <simulation_mode> not defined or malformed: %s", e.what());
-    this->~AerialPlatform();
-  }
 
   try {
     this->declare_parameter<std::string>("control_modes_file");
@@ -60,10 +53,11 @@ AerialPlatform::AerialPlatform()
 
   this->get_parameter("cmd_freq", cmd_freq_);
   this->get_parameter("info_freq", info_freq_);
-  this->get_parameter("simulation_mode", parameters_.simulation_mode);
-  this->get_parameter("control_modes_file", parameters_.control_modes_file);
 
-  this->loadControlModes(parameters_.control_modes_file);
+  std::string control_modes_file;
+  this->get_parameter("control_modes_file", control_modes_file);
+
+  this->loadControlModes(control_modes_file);
 
   pose_command_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
       this->generate_global_name(as2_names::topics::actuator_command::pose),
@@ -134,6 +128,9 @@ AerialPlatform::AerialPlatform()
   platform_info_timer_ =
       this->create_wall_timer(std::chrono::duration<double>(1.0f / info_freq_),
                               std::bind(&AerialPlatform::publishPlatformInfo, this));
+
+  platform_cmd_timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0f / cmd_freq_),
+                                                std::bind(&AerialPlatform::sendCommand, this));
 }
 
 bool AerialPlatform::setArmingState(bool state) {
@@ -179,6 +176,17 @@ bool AerialPlatform::sendCommand() {
     RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000,
                           "Platform control mode is not settled yet");
     return false;
+
+  } else if (!getArmingState() || !getOffboardMode()) {
+    if (!getArmingState()) {
+      auto& clk = *this->get_clock();
+      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not armed yet");
+      return false;
+    } else if (!getOffboardMode()) {
+      auto& clk = *this->get_clock();
+      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not in offboard mode");
+      return false;
+    }
   } else {
     return ownSendCommand();
   }
