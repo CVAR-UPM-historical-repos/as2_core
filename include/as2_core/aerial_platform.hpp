@@ -187,7 +187,7 @@ protected:
    * @brief Send command to the platform.
    * @return true if the command was sent successfully, false otherwise
    */
-  virtual bool sendCommand();
+  virtual void sendCommand();
 
 private:
   void loadControlModes(const std::string &filename);
@@ -258,7 +258,7 @@ private:
    * @brief Publishes the platform info message.
    */
   void publishPlatformInfo() {
-    platform_info_msg_.header.stamp = rclcpp::Clock().now();
+    platform_info_msg_.header.stamp = this->now();
     platform_info_msg_.status       = state_machine_.getState();
     platform_info_pub_->publish(platform_info_msg_);
   };

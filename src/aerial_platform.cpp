@@ -37,7 +37,7 @@ AerialPlatform::AerialPlatform()
     : as2::Node(std::string("platform")), state_machine_(as2::PlatformStateMachine(this)) {
   platform_info_msg_.armed                             = false;
   platform_info_msg_.offboard                          = false;
-  platform_info_msg_.connected                         = false;
+  platform_info_msg_.connected                         = true;  // TODO: Check if connected
   platform_info_msg_.current_control_mode.control_mode = as2_msgs::msg::ControlMode::UNSET;
 
   this->declare_parameter<float>("cmd_freq", 100.0);
@@ -170,25 +170,34 @@ bool AerialPlatform::setPlatformControlMode(const as2_msgs::msg::ControlMode& ms
   return ownSetPlatformControlMode(msg);
 }
 
-bool AerialPlatform::sendCommand() {
+void AerialPlatform::sendCommand() {
   if (!isControlModeSettled()) {
     auto& clk = *this->get_clock();
     RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000,
                           "Platform control mode is not settled yet");
-    return false;
+    return;
 
-  } else if (!getArmingState() || !getOffboardMode()) {
-    if (!getArmingState()) {
+  } else if (!getConnectedStatus() || !getArmingState() || !getOffboardMode()) {
+    if (!getConnectedStatus()) {
+      auto& clk = *this->get_clock();
+      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not connected");
+      return;
+    } else if (!getArmingState()) {
       auto& clk = *this->get_clock();
       RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not armed yet");
-      return false;
+      return;
     } else if (!getOffboardMode()) {
       auto& clk = *this->get_clock();
       RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not in offboard mode");
-      return false;
+      return;
     }
+
   } else {
-    return ownSendCommand();
+    bool command = ownSendCommand();
+    if (!command) {
+      auto& clk = *this->get_clock();
+      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform command failed");
+    }
   }
 }
 
