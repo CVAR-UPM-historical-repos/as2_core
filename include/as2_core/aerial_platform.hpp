@@ -109,7 +109,10 @@ public:
    * @return true command is sended successfully.
    * @return false command is not sended.
    */
-  virtual bool ownSendCommand() = 0;
+  virtual bool ownSendCommand() {
+    RCLCPP_FATAL(get_logger(), "ownSendCommand() not implemented");
+    return false;
+  }
 
   /**
    * @brief Handles how arming state has to be settled  in the concrete platform.
