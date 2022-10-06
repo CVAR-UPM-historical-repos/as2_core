@@ -62,11 +62,6 @@
 #include "utils/yaml_utils.hpp"
 
 namespace as2 {
-// TODO: Rethink how this parameters are used and how they are set.
-struct AerialPlatformParameters {
-  bool simulation_mode;
-  std::string control_modes_file;
-};
 
 /**
  * @brief Base class for all Aerial platforms. It provides the basic functionality for the platform.
@@ -79,12 +74,12 @@ class AerialPlatform : public as2::Node {
 private:
   bool sending_commands_ = false;
 
+  rclcpp::TimerBase::SharedPtr platform_cmd_timer_;
   rclcpp::TimerBase::SharedPtr platform_info_timer_;
   as2::PlatformStateMachine state_machine_;
   std::vector<uint8_t> available_control_modes_;
 
 protected:
-  as2::AerialPlatformParameters parameters_;
   float cmd_freq_;
   float info_freq_;
 
@@ -192,7 +187,7 @@ protected:
    * @brief Send command to the platform.
    * @return true if the command was sent successfully, false otherwise
    */
-  bool sendCommand();
+  virtual void sendCommand();
 
 private:
   void loadControlModes(const std::string &filename);
@@ -211,14 +206,6 @@ public:
   };
 
   bool handleStateMachineEvent(const int8_t &event) { return state_machine_.processEvent(event); };
-
-  /**
-   * @brief Get the Flag Simulation Mode object
-   *
-   * @return true The platform is in simulation mode
-   * @return false There is a real platform
-   */
-  inline bool getFlagSimulationMode() const { return parameters_.simulation_mode; }
 
   /**
    * @brief Get whether the platform is armed or not.
@@ -271,7 +258,7 @@ private:
    * @brief Publishes the platform info message.
    */
   void publishPlatformInfo() {
-    platform_info_msg_.header.stamp = rclcpp::Clock().now();
+    platform_info_msg_.header.stamp = this->now();
     platform_info_msg_.status       = state_machine_.getState();
     platform_info_pub_->publish(platform_info_msg_);
   };
