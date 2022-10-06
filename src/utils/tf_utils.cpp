@@ -157,8 +157,8 @@ nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
 geometry_msgs::msg::PoseStamped TfHandler::getPoseStamped(const std::string &target_frame,
                                                           const std::string &source_frame,
                                                           const tf2::TimePoint &time) {
-  auto transform =
-      tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame), time);
+  auto transform = tf_buffer_->lookupTransform(formatFrameId(target_frame),
+                                               formatFrameId(source_frame), time, TF_TIMEOUT);
   geometry_msgs::msg::PoseStamped pose;
   pose.header.frame_id    = target_frame;
   pose.header.stamp       = transform.header.stamp;

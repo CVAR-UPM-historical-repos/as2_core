@@ -189,11 +189,7 @@ public:
 
 private:
   inline std::string formatFrameId(const std::string &_frame_id) {
-    std::string frame_id = _frame_id;
-    if (_frame_id[0] != '/') {
-      frame_id = generateTfName(node_->get_namespace(), _frame_id);
-    }
-    return frame_id;
+    return generateTfName(node_->get_namespace(), _frame_id);
   };
 };  // namespace tf
 
