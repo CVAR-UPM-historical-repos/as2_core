@@ -92,6 +92,16 @@ as2_msgs::msg::ControlMode convertUint8tToAS2ControlMode(uint8_t control_mode_ui
 std::string controlModeToString(const uint8_t control_mode_uint8t);
 std::string controlModeToString(const as2_msgs::msg::ControlMode &mode);
 
+constexpr uint8_t convertToUint8t(const as2_msgs::msg::ControlMode &mode) {
+  return (mode.control_mode << 4) | (mode.yaw_mode << 2) | mode.reference_frame;
+}
+
+constexpr uint8_t convertToUint8t(uint8_t control_mode_uint8t,
+                                  uint8_t yaw_mode_uint8t,
+                                  uint8_t reference_frame_uint8t) {
+  return (control_mode_uint8t << 4) | (yaw_mode_uint8t << 2) | reference_frame_uint8t;
+}
+
 inline bool compareModes(const uint8_t mode1, const uint8_t mode2, const uint8_t mask = MATCH_ALL) {
   return (mode1 & mask) == (mode2 & mask);
 }
