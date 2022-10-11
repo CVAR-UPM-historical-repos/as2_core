@@ -79,11 +79,45 @@ namespace control_mode {
 // #
 // #-----------------------------------------------------------------
 
+#define MATCH_ALL 0b11111111
+#define MATCH_CONTROL_MODE 0b11110000
+#define MATCH_YAW_MODE 0b00001100
+#define MATCH_REFERENCE_FRAME 0b00000011
+#define UNSET_MODE_MASK 0b00000000
+#define HOVER_MODE_MASK 0b00010000
+
 uint8_t convertAS2ControlModeToUint8t(const as2_msgs::msg::ControlMode &mode);
 as2_msgs::msg::ControlMode convertUint8tToAS2ControlMode(uint8_t control_mode_uint8t);
 
 std::string controlModeToString(const uint8_t control_mode_uint8t);
 std::string controlModeToString(const as2_msgs::msg::ControlMode &mode);
+
+inline bool compareModes(const uint8_t mode1, const uint8_t mode2, const uint8_t mask = MATCH_ALL) {
+  return (mode1 & mask) == (mode2 & mask);
+}
+
+inline bool compareModes(const as2_msgs::msg::ControlMode &mode1,
+                         const as2_msgs::msg::ControlMode &mode2,
+                         const uint8_t mask = MATCH_ALL) {
+  return compareModes(convertAS2ControlModeToUint8t(mode1), convertAS2ControlModeToUint8t(mode2),
+                      mask);
+}
+
+inline bool isUnsetMode(const uint8_t control_mode_uint8t) {
+  return compareModes(control_mode_uint8t, UNSET_MODE_MASK, MATCH_CONTROL_MODE);
+}
+
+inline bool isUnsetMode(const as2_msgs::msg::ControlMode &mode) {
+  return mode.control_mode == as2_msgs::msg::ControlMode::UNSET;
+}
+
+inline bool isHoverMode(const uint8_t control_mode_uint8t) {
+  return compareModes(control_mode_uint8t, HOVER_MODE_MASK, MATCH_CONTROL_MODE);
+}
+
+inline bool isHoverMode(const as2_msgs::msg::ControlMode &mode) {
+  return mode.control_mode == as2_msgs::msg::ControlMode::HOVER;
+}
 
 void printControlMode(const as2_msgs::msg::ControlMode &mode);
 void printControlMode(uint8_t control_mode_uint8t);
