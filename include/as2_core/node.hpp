@@ -207,7 +207,7 @@ public:
    * @brief spin cycle of the node
    */
   template <class CallbackT>
-  rclcpp::TimerBase::SharedPtr create_timer(rclcpp::Duration &period,
+  rclcpp::TimerBase::SharedPtr create_timer(rclcpp::Duration period,
                                             CallbackT callback,
                                             rclcpp::CallbackGroup::SharedPtr group = nullptr) {
     return rclcpp::create_timer(this, this->get_clock(), period, callback, group);
