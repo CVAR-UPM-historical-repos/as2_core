@@ -41,6 +41,7 @@
 #include <functional>
 #include <memory>
 #include <rclcpp/create_timer.hpp>
+#include <rclcpp/timer.hpp>
 #include <string>
 
 #include "as2_core/rate.hpp"
@@ -206,11 +207,19 @@ public:
   /**
    * @brief spin cycle of the node
    */
-  template <class CallbackT>
+  /* template <class CallbackT>
   rclcpp::TimerBase::SharedPtr create_timer(rclcpp::Duration period,
                                             CallbackT callback,
                                             rclcpp::CallbackGroup::SharedPtr group = nullptr) {
     return rclcpp::create_timer(this, this->get_clock(), period, callback, group);
+  } */
+
+  template <typename DurationRepT, typename DurationT, typename CallbackT>
+  typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
+      std::chrono::duration<DurationRepT, DurationT> period,
+      CallbackT callback,
+      rclcpp::CallbackGroup::SharedPtr group = nullptr) {
+    return rclcpp::create_timer(this, this->get_clock(), period, std::move(callback), group);
   }
 
   /**
