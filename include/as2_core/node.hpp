@@ -40,6 +40,7 @@
 #include <exception>
 #include <functional>
 #include <memory>
+#include <rclcpp/create_timer.hpp>
 #include <string>
 
 #include "as2_core/rate.hpp"
@@ -203,6 +204,16 @@ private:
 
 public:
   /**
+   * @brief spin cycle of the node
+   */
+  template <class CallbackT>
+  rclcpp::TimerBase::SharedPtr create_timer(rclcpp::Duration &period,
+                                            CallbackT callback,
+                                            rclcpp::CallbackGroup::SharedPtr group = nullptr) {
+    return rclcpp::create_timer(this, this->get_clock(), period, callback, group);
+  }
+
+  /**
    * @brief sleeps the node to ensure node_frecuency desired
    *
    * @return true the node is sleeping
@@ -236,7 +247,7 @@ public:
     loop_rate_ptr_  = std::make_shared<Rate>(loop_frequency_);
     return true;
   };
-};
+};  // namespace as2
 
 }  // namespace as2
 
