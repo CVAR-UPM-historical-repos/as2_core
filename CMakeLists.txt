@@ -57,6 +57,7 @@ set(SOURCE_CPP_FILES
   src/utils/tf_utils.cpp
   src/utils/yaml_utils.cpp
   src/utils/frame_utils.cpp
+  src/utils/gps_utils.cpp
 )
 
 add_library(${PROJECT_NAME} ${SOURCE_CPP_FILES} )
