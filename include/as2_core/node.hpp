@@ -205,20 +205,14 @@ private:
 
 public:
   /**
-   * @brief spin cycle of the node
+   * @brief create a timer with the node clock
+   * 
+   * @return rclcpp::TimerBase::SharedPtr rclcpp timer using node clock
    */
-  /* template <class CallbackT>
-  rclcpp::TimerBase::SharedPtr create_timer(rclcpp::Duration period,
+  template <typename DurationRepT, typename DurationT, typename CallbackT>
+  rclcpp::TimerBase::SharedPtr create_timer(std::chrono::duration<DurationRepT, DurationT> period,
                                             CallbackT callback,
                                             rclcpp::CallbackGroup::SharedPtr group = nullptr) {
-    return rclcpp::create_timer(this, this->get_clock(), period, callback, group);
-  } */
-
-  template <typename DurationRepT, typename DurationT, typename CallbackT>
-  typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
-      std::chrono::duration<DurationRepT, DurationT> period,
-      CallbackT callback,
-      rclcpp::CallbackGroup::SharedPtr group = nullptr) {
     return rclcpp::create_timer(this, this->get_clock(), period, std::move(callback), group);
   }
 
