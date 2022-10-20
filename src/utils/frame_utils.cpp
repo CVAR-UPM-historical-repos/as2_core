@@ -180,6 +180,26 @@ double getYawFromQuaternion(const Eigen::Quaterniond &quaternion) {
 
 double getVector2DAngle(const double &x, const double &y) { return atan2f(y, x); }
 
+double wrapAngle0To2Pi(const double &theta) {
+  double theta_wrapped = fmod(theta, 2.0 * M_PI);
+  if (theta_wrapped < 0.0) {
+    theta_wrapped += 2.0 * M_PI;
+  }
+  return theta_wrapped;
+}
+
+double angleMinError(const double &theta1, const double &theta2) {
+  double theta1_wrapped = wrapAngle0To2Pi(theta1);
+  double theta2_wrapped = wrapAngle0To2Pi(theta2);
+  double error          = theta1_wrapped - theta2_wrapped;
+  if (error > M_PI) {
+    error -= 2.0 * M_PI;
+  } else if (error < -M_PI) {
+    error += 2.0 * M_PI;
+  }
+  return error;
+}
+
 };  // namespace frame
 
 };  // namespace as2
