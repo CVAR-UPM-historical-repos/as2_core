@@ -40,6 +40,8 @@
 #include <exception>
 #include <functional>
 #include <memory>
+#include <rclcpp/create_timer.hpp>
+#include <rclcpp/timer.hpp>
 #include <string>
 
 #include "as2_core/rate.hpp"
@@ -203,6 +205,18 @@ private:
 
 public:
   /**
+   * @brief create a timer with the node clock
+   * 
+   * @return rclcpp::TimerBase::SharedPtr rclcpp timer using node clock
+   */
+  template <typename DurationRepT, typename DurationT, typename CallbackT>
+  rclcpp::TimerBase::SharedPtr create_timer(std::chrono::duration<DurationRepT, DurationT> period,
+                                            CallbackT callback,
+                                            rclcpp::CallbackGroup::SharedPtr group = nullptr) {
+    return rclcpp::create_timer(this, this->get_clock(), period, std::move(callback), group);
+  }
+
+  /**
    * @brief sleeps the node to ensure node_frecuency desired
    *
    * @return true the node is sleeping
@@ -236,7 +250,7 @@ public:
     loop_rate_ptr_  = std::make_shared<Rate>(loop_frequency_);
     return true;
   };
-};
+};  // namespace as2
 
 }  // namespace as2
 
