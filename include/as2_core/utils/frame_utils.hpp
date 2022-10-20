@@ -232,6 +232,23 @@ double getYawFromQuaternion(const Eigen::Quaterniond &quaternion);
  */
 double getVector2DAngle(const double &x, const double &y);
 
+/**
+ * @brief Wrap angle to [0, 2*pi].
+ *
+ * @param theta double angle.
+ * @return Double wrapped angle.
+ */
+double wrapAngle0To2Pi(const double &theta);
+
+/**
+ * @brief Compute the minumun angle between two angles. Maximun error is pi.
+ *
+ * @param theta1 double first angle.
+ * @param theta2 double second angle.
+ * @return Double yaw difference.
+ */
+double angleMinError(const double &theta1, const double &theta2);
+
 };  // namespace frame
 
 };  // namespace as2
