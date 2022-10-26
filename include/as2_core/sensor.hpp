@@ -156,8 +156,8 @@ public:
                                                        as2_names::topics::sensor_measurements::qos);
 
     if (this->pub_freq_ != -1) {
-      timer_ = node_ptr_->create_wall_timer(std::chrono::milliseconds(1000 / pub_freq),
-                                            [this]() { publishData(); });
+      timer_ = node_ptr_->create_timer(std::chrono::milliseconds(1000 / pub_freq),
+                                       [this]() { publishData(); });
     }
   }
 
@@ -184,12 +184,12 @@ public:
   Camera(const std::string &id, as2::Node *node_ptr);
   ~Camera();
 
-  void setup();
   void updateData(const sensor_msgs::msg::Image &_img);
   void updateData(const cv::Mat &_img);
-  void publishCameraData(const sensor_msgs::msg::Image &msg);  // private
   void loadParameters(const std::string &file);
-  void setParameters(const sensor_msgs::msg::CameraInfo &_camera_info, const std::string &_encoding, const std::string &_camera_model);
+  void setParameters(const sensor_msgs::msg::CameraInfo &_camera_info,
+                     const std::string &_encoding,
+                     const std::string &_camera_model = "pinhole");
 
   void publishRectifiedImage(const sensor_msgs::msg::Image &msg);
   // void publishCompressedImage(const sensor_msgs::msg::Image &msg);
@@ -232,7 +232,8 @@ public:
       pitch = 0;
       roll  = -M_PI / 2.0f;
       q.setRPY(roll, pitch, yaw);
-      setStaticTransform_(frame_id + "/" + camera_link_, frame_id, 0, 0, 0, q.x(), q.y(), q.z(), q.w());
+      setStaticTransform_(frame_id + "/" + camera_link_, frame_id, 0, 0, 0, q.x(), q.y(), q.z(),
+                          q.w());
     }
   };
 
@@ -245,8 +246,6 @@ private:
   sensor_msgs::msg::Image image_data_;
   sensor_msgs::msg::CameraInfo camera_info_data_;
 
-  std::shared_ptr<rclcpp::Node> getSelfPtr();
-
   bool setup_                 = true;
   bool camera_info_available_ = false;
 
@@ -256,6 +255,9 @@ private:
   std::string encoding_;
   std::string camera_model_;
 
+  std::shared_ptr<rclcpp::Node> getSelfPtr();
+  void setup();
+  void publishCameraData(const sensor_msgs::msg::Image &msg);
 };  // class CameraSensor
 
 using Imu         = Sensor<sensor_msgs::msg::Imu>;
