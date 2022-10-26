@@ -34,6 +34,7 @@ set(PROJECT_DEPENDENCIES
   yaml-cpp
   image_transport
   cv_bridge
+  geographic_msgs
 )
 
 foreach(DEPENDENCY ${PROJECT_DEPENDENCIES})
