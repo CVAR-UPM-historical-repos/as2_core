@@ -55,10 +55,19 @@ std::string generateTfName(const std::string &_namespace, const std::string &_fr
                 _frame_name.c_str());
     return _frame_name;
   }
-  if (_namespace[0] == '/') {
-    return _namespace.substr(1) + "/" + _frame_name;
+  std::string ns = _namespace;
+  if (ns[0] == '/') {
+    ns = ns.substr(1);
   }
-  return _namespace + "/" + _frame_name;
+
+  // If _frame_name until first '/' is equal to _namespace, then _frame_name is absolute
+  auto pos = _frame_name.find('/');
+  if (pos != std::string::npos) {
+    if (_frame_name.substr(0, pos) == ns) {
+      return _frame_name;
+    }
+  }
+  return ns + "/" + _frame_name;
 }
 
 geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame_id,
@@ -89,23 +98,21 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame
 geometry_msgs::msg::PointStamped TfHandler::convert(const geometry_msgs::msg::PointStamped &_point,
                                                     const std::string &target_frame) {
   geometry_msgs::msg::PointStamped point_out;
-  const auto frame = formatFrameId(target_frame);
-  tf2::doTransform(
-      _point, point_out,
-      tf_buffer_->lookupTransform(frame, _point.header.frame_id, _point.header.stamp, TF_TIMEOUT));
+  tf2::doTransform(_point, point_out,
+                   tf_buffer_->lookupTransform(target_frame, _point.header.frame_id,
+                                               _point.header.stamp, TF_TIMEOUT));
   point_out.header.stamp    = _point.header.stamp;
-  point_out.header.frame_id = frame;
+  point_out.header.frame_id = target_frame;
   return point_out;
 };
 
 geometry_msgs::msg::PoseStamped TfHandler::convert(const geometry_msgs::msg::PoseStamped &_pose,
                                                    const std::string &target_frame) {
   geometry_msgs::msg::PoseStamped pose_out;
-  const auto frame = formatFrameId(target_frame);
-  tf2::doTransform(
-      _pose, pose_out,
-      tf_buffer_->lookupTransform(frame, _pose.header.frame_id, _pose.header.stamp, TF_TIMEOUT));
-  pose_out.header.frame_id = frame;
+  tf2::doTransform(_pose, pose_out,
+                   tf_buffer_->lookupTransform(target_frame, _pose.header.frame_id,
+                                               _pose.header.stamp, TF_TIMEOUT));
+  pose_out.header.frame_id = target_frame;
   pose_out.header.stamp    = _pose.header.stamp;
   return pose_out;
 };
@@ -129,11 +136,10 @@ geometry_msgs::msg::Vector3Stamped TfHandler::convert(
     const geometry_msgs::msg::Vector3Stamped &_vector,
     const std::string &target_frame) {
   geometry_msgs::msg::Vector3Stamped vector_out;
-  const auto frame = formatFrameId(target_frame);
   tf2::doTransform(_vector, vector_out,
-                   tf_buffer_->lookupTransform(frame, _vector.header.frame_id, _vector.header.stamp,
-                                               TF_TIMEOUT));
-  vector_out.header.frame_id = frame;
+                   tf_buffer_->lookupTransform(target_frame, _vector.header.frame_id,
+                                               _vector.header.stamp, TF_TIMEOUT));
+  vector_out.header.frame_id = target_frame;
   vector_out.header.stamp    = _vector.header.stamp;
   return vector_out;
 };
@@ -141,15 +147,14 @@ geometry_msgs::msg::Vector3Stamped TfHandler::convert(
 nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
                                        const std::string &target_frame) {
   nav_msgs::msg::Path path_out;
-  const auto frame = formatFrameId(target_frame);
   for (auto &pose : _path.poses) {
     geometry_msgs::msg::PoseStamped pose_out;
-    tf2::doTransform(
-        pose, pose_out,
-        tf_buffer_->lookupTransform(frame, pose.header.frame_id, pose.header.stamp, TF_TIMEOUT));
+    tf2::doTransform(pose, pose_out,
+                     tf_buffer_->lookupTransform(target_frame, pose.header.frame_id,
+                                                 pose.header.stamp, TF_TIMEOUT));
     path_out.poses.push_back(pose_out);
   }
-  path_out.header.frame_id = frame;
+  path_out.header.frame_id = target_frame;
   path_out.header.stamp    = _path.header.stamp;
   return path_out;
 };
@@ -157,8 +162,7 @@ nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
 geometry_msgs::msg::PoseStamped TfHandler::getPoseStamped(const std::string &target_frame,
                                                           const std::string &source_frame,
                                                           const tf2::TimePoint &time) {
-  auto transform = tf_buffer_->lookupTransform(formatFrameId(target_frame),
-                                               formatFrameId(source_frame), time, TF_TIMEOUT);
+  auto transform = tf_buffer_->lookupTransform(target_frame, source_frame, time, TF_TIMEOUT);
   geometry_msgs::msg::PoseStamped pose;
   pose.header.frame_id    = target_frame;
   pose.header.stamp       = transform.header.stamp;
@@ -175,8 +179,7 @@ geometry_msgs::msg::PoseStamped TfHandler::getPoseStamped(const std::string &tar
 geometry_msgs::msg::TransformStamped TfHandler::getTransform(const std::string &target_frame,
                                                              const std::string &source_frame,
                                                              const tf2::TimePoint &time) {
-  return tf_buffer_->lookupTransform(formatFrameId(target_frame), formatFrameId(source_frame),
-                                     time);
+  return tf_buffer_->lookupTransform(target_frame, source_frame, time);
 };
 }  // namespace tf
 }  // namespace as2
