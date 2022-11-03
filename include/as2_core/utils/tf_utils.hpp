@@ -186,11 +186,6 @@ public:
       const std::string &target_frame,
       const std::string &source_frame,
       const tf2::TimePoint &time = tf2::TimePointZero);
-
-private:
-  inline std::string formatFrameId(const std::string &_frame_id) {
-    return generateTfName(node_->get_namespace(), _frame_id);
-  };
 };  // namespace tf
 
 }  // namespace tf
