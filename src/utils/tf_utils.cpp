@@ -181,5 +181,66 @@ geometry_msgs::msg::TransformStamped TfHandler::getTransform(const std::string &
                                                              const tf2::TimePoint &time) {
   return tf_buffer_->lookupTransform(target_frame, source_frame, time);
 };
+
+bool TfHandler::tryConvert(geometry_msgs::msg::PointStamped &_point,
+                           const std::string &_target_frame) {
+  if (_target_frame == "" || _point.header.frame_id == "") {
+    RCLCPP_ERROR(rclcpp::get_logger("tf_utils"), "Could not convert from frame %s to frame %s",
+                 _point.header.frame_id.c_str(), _target_frame.c_str());
+    return false;
+  } else if (_target_frame == _point.header.frame_id) {
+    return true;
+  }
+
+  try {
+    _point = convert(_point, _target_frame);
+    return true;
+  } catch (tf2::TransformException &ex) {
+    RCLCPP_WARN(rclcpp::get_logger("tf_utils"), "Could not get transform: %s", ex.what());
+    return false;
+  }
+  return false;
+};
+
+bool TfHandler::tryConvert(geometry_msgs::msg::PoseStamped &_pose,
+                           const std::string &_target_frame) {
+  if (_target_frame == "" || _pose.header.frame_id == "") {
+    RCLCPP_ERROR(rclcpp::get_logger("tf_utils"), "Could not convert from frame %s to frame %s",
+                 _pose.header.frame_id.c_str(), _target_frame.c_str());
+    return false;
+  } else if (_target_frame == _pose.header.frame_id) {
+    return true;
+  }
+
+  try {
+    _pose = convert(_pose, _target_frame);
+    return true;
+  } catch (tf2::TransformException &ex) {
+    RCLCPP_WARN(rclcpp::get_logger("tf_utils"), "Could not get transform: %s", ex.what());
+    return false;
+  }
+  return false;
+};
+
+bool TfHandler::tryConvert(geometry_msgs::msg::TwistStamped &_twist,
+                           const std::string &_target_frame) {
+  if (_target_frame == "" || _twist.header.frame_id == "") {
+    RCLCPP_ERROR(rclcpp::get_logger("tf_utils"), "Could not convert from frame %s to frame %s",
+                 _twist.header.frame_id.c_str(), _target_frame.c_str());
+    return false;
+  } else if (_target_frame == _twist.header.frame_id) {
+    return true;
+  }
+
+  try {
+    _twist = convert(_twist, _target_frame);
+    return true;
+  } catch (tf2::TransformException &ex) {
+    RCLCPP_WARN(rclcpp::get_logger("tf_utils"), "Could not get transform: %s", ex.what());
+    return false;
+  }
+  return false;
+};
+
 }  // namespace tf
 }  // namespace as2

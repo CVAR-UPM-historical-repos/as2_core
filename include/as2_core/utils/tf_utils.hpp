@@ -128,7 +128,6 @@ public:
    * @return geometry_msgs::msg::PoseStamped in the target frame
    * @throw tf2::TransformException if the transform is not available
    */
-
   geometry_msgs::msg::PoseStamped convert(const geometry_msgs::msg::PoseStamped &_pose,
                                           const std::string &target_frame);
 
@@ -186,6 +185,37 @@ public:
       const std::string &target_frame,
       const std::string &source_frame,
       const tf2::TimePoint &time = tf2::TimePointZero);
+
+  /**
+   * @brief convert a geometry_msgs::msg::PointStamped to desired frame, checking if frames are
+   * valid
+   * @param point a geometry_msgs::msg::PointStamped to get converted
+   * @param _target_frame the target frame
+   * @return bool true if the conversion was successful
+   * @throw tf2::TransformException if the transform is not available
+   */
+  bool tryConvert(geometry_msgs::msg::PointStamped &_point, const std::string &_target_frame);
+
+  /**
+   * @brief convert a geometry_msgs::msg::PoseStamped to desired frame, checking if frames are
+   * valid
+   * @param point a geometry_msgs::msg::PoseStamped to get converted
+   * @param _target_frame the target frame
+   * @return bool true if the conversion was successful
+   * @throw tf2::TransformException if the transform is not available
+   */
+  bool tryConvert(geometry_msgs::msg::PoseStamped &_pose, const std::string &_target_frame);
+
+  /**
+   * @brief convert a geometry_msgs::msg::TwistStamped to desired frame, checking if frames are
+   * valid
+   * @param point a geometry_msgs::msg::TwistStamped to get converted
+   * @param _target_frame the target frame
+   * @return bool true if the conversion was successful
+   * @throw tf2::TransformException if the transform is not available
+   */
+  bool tryConvert(geometry_msgs::msg::TwistStamped &_twist, const std::string &_target_frame);
+
 };  // namespace tf
 
 }  // namespace tf
