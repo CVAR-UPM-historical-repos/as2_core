@@ -187,35 +187,34 @@ bool AerialPlatform::setPlatformControlMode(const as2_msgs::msg::ControlMode& ms
 }
 
 void AerialPlatform::sendCommand() {
+  auto& clk = *this->get_clock();
   if (!isControlModeSettled()) {
-    auto& clk = *this->get_clock();
     RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000,
                           "Platform control mode is not settled yet");
     return;
-
-  } else if (!getConnectedStatus() || !getArmingState() || !getOffboardMode()) {
-    if (!getConnectedStatus()) {
-      auto& clk = *this->get_clock();
-      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not connected");
-      return;
-    } else if (!getArmingState()) {
-      auto& clk = *this->get_clock();
-      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not armed yet");
-      return;
-    } else if (!getOffboardMode()) {
-      auto& clk = *this->get_clock();
-      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not in offboard mode");
-      return;
-    }
-
-  } else {
-    bool command = ownSendCommand();
-    if (!command) {
-      auto& clk = *this->get_clock();
-      RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform command failed");
-    }
   }
-}
+  if (!getConnectedStatus()) {
+    auto& clk = *this->get_clock();
+    RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not connected");
+    return;
+  } else if (!getArmingState()) {
+    auto& clk = *this->get_clock();
+    RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not armed yet");
+    return;
+  } else if (!getOffboardMode()) {
+    auto& clk = *this->get_clock();
+    RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not in offboard mode");
+    return;
+  }
+
+  if (state_machine_.getState().state == as2_msgs::msg::PlatformStatus::EMERGENCY) {
+    RCLCPP_WARN_THROTTLE(this->get_logger(), clk, 1000, "SEND PLATFORM STOP COMMAND");
+    ownStopPlatform();
+  } else if (!ownSendCommand()) {
+    RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform command failed");
+  }
+
+}  // namespace as2
 
 void AerialPlatform::loadControlModes(const std::string& filename) {
   std::vector<std::string> modes = as2::yaml::find_tag_in_yaml_file(filename, "available_modes");
@@ -309,5 +308,4 @@ void AerialPlatform::alertEventCallback(const as2_msgs::msg::AlertEvent::SharedP
       break;
   }
 };
-
 };  // namespace as2
