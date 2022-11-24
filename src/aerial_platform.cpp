@@ -194,15 +194,12 @@ void AerialPlatform::sendCommand() {
     return;
   }
   if (!getConnectedStatus()) {
-    auto& clk = *this->get_clock();
     RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not connected");
     return;
   } else if (!getArmingState()) {
-    auto& clk = *this->get_clock();
     RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not armed yet");
     return;
   } else if (!getOffboardMode()) {
-    auto& clk = *this->get_clock();
     RCLCPP_DEBUG_THROTTLE(this->get_logger(), clk, 5000, "Platform is not in offboard mode");
     return;
   }
