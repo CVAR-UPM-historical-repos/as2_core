@@ -36,8 +36,7 @@
 namespace as2 {
 namespace frame {
 
-Eigen::Vector3d applyTransformToVector(const tf2::Quaternion &quaternion,
-                                       const Eigen::Vector3d &vector) {
+Eigen::Vector3d transform(const tf2::Quaternion &quaternion, const Eigen::Vector3d &vector) {
   tf2::Matrix3x3 rot(quaternion);
   Eigen::Matrix3d rot_eigen;
   rot_eigen << rot[0][0], rot[0][1], rot[0][2], rot[1][0], rot[1][1], rot[1][2], rot[2][0],
@@ -46,64 +45,51 @@ Eigen::Vector3d applyTransformToVector(const tf2::Quaternion &quaternion,
   return rot_eigen * vector;
 }
 
-inline Eigen::Vector3d applyTransformToVector(const float roll_angle,
-                                              const float pitch_angle,
-                                              const float yaw_angle,
-                                              const Eigen::Vector3d &vector) {
+inline Eigen::Vector3d transform(const float roll_angle,
+                                 const float pitch_angle,
+                                 const float yaw_angle,
+                                 const Eigen::Vector3d &vector) {
   tf2::Quaternion q;
   q.setRPY(roll_angle, pitch_angle, yaw_angle);
-  return applyTransformToVector(q, vector);
+  return transform(q, vector);
 }
 
-inline Eigen::Vector3d applyTransformToVector(const geometry_msgs::msg::Quaternion &quaternion,
-                                              const Eigen::Vector3d &vector) {
+inline Eigen::Vector3d transform(const geometry_msgs::msg::Quaternion &quaternion,
+                                 const Eigen::Vector3d &vector) {
   tf2::Quaternion q(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
-  return applyTransformToVector(q, vector);
+  return transform(q, vector);
 }
 
-inline Eigen::Vector3d applyTransformToVector(const Eigen::Quaterniond &quaternion,
-                                              const Eigen::Vector3d &vector) {
+inline Eigen::Vector3d transform(const Eigen::Quaterniond &quaternion,
+                                 const Eigen::Vector3d &vector) {
   tf2::Quaternion q(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
-  return applyTransformToVector(q, vector);
+  return transform(q, vector);
 }
 
-inline Eigen::Vector3d applyTransformToVector(const geometry_msgs::msg::Pose &pose,
-                                              const Eigen::Vector3d &vector) {
-  tf2::Quaternion q(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w);
-  return applyTransformToVector(q, vector);
+inline Eigen::Vector3d transformInverse(const tf2::Quaternion &quaternion,
+                                        const Eigen::Vector3d &vector) {
+  return transform(quaternion.inverse(), vector);
 }
 
-inline Eigen::Vector3d applyInverseTransformToVector(const tf2::Quaternion &quaternion,
-                                                     const Eigen::Vector3d &vector) {
-  return applyTransformToVector(quaternion.inverse(), vector);
-}
-
-inline Eigen::Vector3d applyInverseTransformToVector(const float roll_angle,
-                                                     const float pitch_angle,
-                                                     const float yaw_angle,
-                                                     const Eigen::Vector3d &vector) {
+inline Eigen::Vector3d transformInverse(const float roll_angle,
+                                        const float pitch_angle,
+                                        const float yaw_angle,
+                                        const Eigen::Vector3d &vector) {
   tf2::Quaternion q;
   q.setRPY(roll_angle, pitch_angle, yaw_angle);
-  return applyInverseTransformToVector(q, vector);
+  return transformInverse(q, vector);
 }
 
-inline Eigen::Vector3d applyInverseTransformToVector(
-    const geometry_msgs::msg::Quaternion &quaternion,
-    const Eigen::Vector3d &vector) {
+inline Eigen::Vector3d transformInverse(const geometry_msgs::msg::Quaternion &quaternion,
+                                        const Eigen::Vector3d &vector) {
   tf2::Quaternion q(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
-  return applyInverseTransformToVector(q, vector);
+  return transformInverse(q, vector);
 }
 
-inline Eigen::Vector3d applyInverseTransformToVector(const Eigen::Quaterniond &quaternion,
-                                                     const Eigen::Vector3d &vector) {
+inline Eigen::Vector3d transformInverse(const Eigen::Quaterniond &quaternion,
+                                        const Eigen::Vector3d &vector) {
   tf2::Quaternion q(quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w());
-  return applyInverseTransformToVector(q, vector);
-}
-
-inline Eigen::Vector3d applyInverseTransformToVector(const geometry_msgs::msg::Pose &pose,
-                                                     const Eigen::Vector3d &vector) {
-  tf2::Quaternion q(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w);
-  return applyInverseTransformToVector(q, vector);
+  return transformInverse(q, vector);
 }
 
 void quaternionToEuler(const tf2::Quaternion &quaternion,

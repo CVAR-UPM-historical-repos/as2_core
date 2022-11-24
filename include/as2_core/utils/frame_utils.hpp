@@ -51,8 +51,7 @@ namespace frame {
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyTransformToVector(const tf2::Quaternion &quaternion,
-                                       const Eigen::Vector3d &vector);
+Eigen::Vector3d transform(const tf2::Quaternion &quaternion, const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a quaternion rotation to a vector.
@@ -64,10 +63,10 @@ Eigen::Vector3d applyTransformToVector(const tf2::Quaternion &quaternion,
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyTransformToVector(const float roll_angle,
-                                       const float pitch_angle,
-                                       const float yaw_angle,
-                                       const Eigen::Vector3d &vector);
+Eigen::Vector3d transform(const float roll_angle,
+                          const float pitch_angle,
+                          const float yaw_angle,
+                          const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a quaternion rotation to a vector.
@@ -77,8 +76,8 @@ Eigen::Vector3d applyTransformToVector(const float roll_angle,
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyTransformToVector(const geometry_msgs::msg::Quaternion &quaternion,
-                                       const Eigen::Vector3d &vector);
+Eigen::Vector3d transform(const geometry_msgs::msg::Quaternion &quaternion,
+                          const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a quaternion rotation to a vector.
@@ -88,19 +87,7 @@ Eigen::Vector3d applyTransformToVector(const geometry_msgs::msg::Quaternion &qua
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyTransformToVector(const Eigen::Quaterniond &quaternion,
-                                       const Eigen::Vector3d &vector);
-
-/**
- * @brief Apply a quaternion rotation to a vector.
- *
- * @param quaternion geometry_msgs::msg::Pose with the quaternion to apply.
- * @param vector Eigen::Vector3d Vector to rotate.
- * @return
- * @return Eigen::Vector3d Rotated vector.
- */
-Eigen::Vector3d applyTransformToVector(const Eigen::Quaterniond &quaternion,
-                                       const Eigen::Vector3d &vector);
+Eigen::Vector3d transform(const Eigen::Quaterniond &quaternion, const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a inverse quaternion rotation to a vector.
@@ -110,8 +97,7 @@ Eigen::Vector3d applyTransformToVector(const Eigen::Quaterniond &quaternion,
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyInverseTransformToVector(const tf2::Quaternion &quaternion,
-                                              const Eigen::Vector3d &vector);
+Eigen::Vector3d transformInverse(const tf2::Quaternion &quaternion, const Eigen::Vector3d &vector);
 /**
  * @brief Apply a inverse quaternion rotation to a vector.
  *
@@ -122,10 +108,10 @@ Eigen::Vector3d applyInverseTransformToVector(const tf2::Quaternion &quaternion,
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyInverseTransformToVector(const float roll_angle,
-                                              const float pitch_angle,
-                                              const float yaw_angle,
-                                              const Eigen::Vector3d &vector);
+Eigen::Vector3d transformInverse(const float roll_angle,
+                                 const float pitch_angle,
+                                 const float yaw_angle,
+                                 const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a inverse quaternion rotation to a vector.
@@ -135,8 +121,8 @@ Eigen::Vector3d applyInverseTransformToVector(const float roll_angle,
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyInverseTransformToVector(const geometry_msgs::msg::Quaternion &quaternion,
-                                              const Eigen::Vector3d &vector);
+Eigen::Vector3d transformInverse(const geometry_msgs::msg::Quaternion &quaternion,
+                                 const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a inverse quaternion rotation to a vector.
@@ -146,8 +132,8 @@ Eigen::Vector3d applyInverseTransformToVector(const geometry_msgs::msg::Quaterni
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyInverseTransformToVector(const Eigen::Quaterniond &quaternion,
-                                              const Eigen::Vector3d &vector);
+Eigen::Vector3d transformInverse(const Eigen::Quaterniond &quaternion,
+                                 const Eigen::Vector3d &vector);
 
 /**
  * @brief Apply a inverse quaternion rotation to a vector.
@@ -157,8 +143,8 @@ Eigen::Vector3d applyInverseTransformToVector(const Eigen::Quaterniond &quaterni
  * @return
  * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d applyInverseTransformToVector(const Eigen::Quaterniond &quaternion,
-                                              const Eigen::Vector3d &vector);
+Eigen::Vector3d transformInverse(const Eigen::Quaterniond &quaternion,
+                                 const Eigen::Vector3d &vector);
 
 /**
  * @brief Convert quaternion to euler angles.
