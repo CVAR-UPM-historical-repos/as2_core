@@ -44,6 +44,7 @@
 #include "as2_core/names/services.hpp"
 #include "as2_core/names/topics.hpp"
 #include "as2_core/platform_state_machine.hpp"
+#include "as2_msgs/msg/alert_event.hpp"
 #include "as2_msgs/msg/control_mode.hpp"
 #include "as2_msgs/msg/platform_info.hpp"
 #include "as2_msgs/msg/platform_status.hpp"
@@ -72,6 +73,7 @@ namespace as2 {
 // TODO: Validate all the system in Pixhawk Class
 class AerialPlatform : public as2::Node {
 private:
+  void initialize();
   bool sending_commands_ = false;
 
   rclcpp::TimerBase::SharedPtr platform_cmd_timer_;
@@ -94,6 +96,11 @@ public:
    *
    */
   AerialPlatform();
+  /**
+   * @brief Construct a new Aerial Platform object, with default parameters.
+   *
+   */
+  AerialPlatform(const std::string &ns);
 
   ~AerialPlatform(){};
 
@@ -153,6 +160,19 @@ public:
    * @return false Landing command is not sended.
    */
   virtual bool ownLand() { return false; };
+
+  /**
+   * @brief Handles the platform emergency kill switch command. This means stop the motors
+   * inmediately, this cannot be reversed. USE WITH CAUTION.
+   */
+  virtual void ownKillSwitch() = 0;
+
+  /**
+   * @brief Handles the platform emergency stop command. STOP means to hover as best as possible.
+   * This hover is different from the hover in the platform control mode. And when it is activated
+   * the platform will stop hearing commands from AS2. USE WITH CAUTION.
+   */
+  virtual void ownStopPlatform() = 0;
 
 private:
   /**
@@ -253,6 +273,7 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_command_sub_;
   rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr twist_command_sub_;
   rclcpp::Subscription<as2_msgs::msg::Thrust>::SharedPtr thrust_command_sub_;
+  rclcpp::Subscription<as2_msgs::msg::AlertEvent>::SharedPtr alert_event_sub_;
 
   /**
    * @brief Publishes the platform info message.
@@ -262,6 +283,8 @@ private:
     platform_info_msg_.status       = state_machine_.getState();
     platform_info_pub_->publish(platform_info_msg_);
   };
+
+  void alertEventCallback(const as2_msgs::msg::AlertEvent::SharedPtr msg);
 
   // ROS Services & srv callbacks
 private:

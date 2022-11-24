@@ -42,6 +42,10 @@
 
 namespace as2_names {
 namespace topics {
+namespace global {
+const rclcpp::QoS qos         = rclcpp::QoS(10);
+const std::string alert_event = "alert_event";
+}  // namespace global
 namespace sensor_measurements {
 const rclcpp::QoS qos     = rclcpp::SensorDataQoS();
 const std::string imu     = "sensor_measurements/imu";
