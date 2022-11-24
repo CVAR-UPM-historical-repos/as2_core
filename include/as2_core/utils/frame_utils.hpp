@@ -188,9 +188,9 @@ void quaternionToEuler(const Eigen::Quaterniond &quaternion,
  * @param yaw double yaw angle.
  * @param quaternion tf2::Quaternion pointer to store quaternion.
  */
-void eulerToQuaternion(const double &roll,
-                       const double &pitch,
-                       const double &yaw,
+void eulerToQuaternion(const double roll,
+                       const double pitch,
+                       const double yaw,
                        tf2::Quaternion &quaternion);
 
 /**
@@ -201,9 +201,9 @@ void eulerToQuaternion(const double &roll,
  * @param yaw double yaw angle.
  * @param quaternion geometry_msgs::msg::Quaternion pointer to store quaternion.
  */
-void eulerToQuaternion(const double &roll,
-                       const double &pitch,
-                       const double &yaw,
+void eulerToQuaternion(const double roll,
+                       const double pitch,
+                       const double yaw,
                        geometry_msgs::msg::Quaternion &quaternion);
 
 /**
@@ -214,9 +214,9 @@ void eulerToQuaternion(const double &roll,
  * @param yaw double yaw angle.
  * @param quaternion Eigen::Quaterniond pointer to store quaternion.
  */
-void eulerToQuaternion(const double &roll,
-                       const double &pitch,
-                       const double &yaw,
+void eulerToQuaternion(const double roll,
+                       const double pitch,
+                       const double yaw,
                        Eigen::Quaterniond &quaternion);
 
 /**
@@ -252,7 +252,7 @@ double getYawFromQuaternion(const Eigen::Quaterniond &quaternion);
  * @param y double y coordinate of the vector.
  * @return Double yaw angle.
  */
-double getVector2DAngle(const double &x, const double &y);
+double getVector2DAngle(const double x, const double y);
 
 /**
  * @brief Wrap angle to [0, 2*pi].
@@ -260,7 +260,7 @@ double getVector2DAngle(const double &x, const double &y);
  * @param theta double angle.
  * @return Double wrapped angle.
  */
-double wrapAngle0To2Pi(const double &theta);
+double wrapAngle0To2Pi(const double theta);
 
 /**
  * @brief Compute the minumun angle between two angles. Maximun error is pi.
@@ -269,7 +269,7 @@ double wrapAngle0To2Pi(const double &theta);
  * @param theta2 double second angle.
  * @return Double yaw difference.
  */
-double angleMinError(const double &theta1, const double &theta2);
+double angleMinError(const double theta1, const double theta2);
 
 };  // namespace frame
 
