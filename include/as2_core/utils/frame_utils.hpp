@@ -42,87 +42,109 @@
 
 namespace as2 {
 namespace frame {
-/**
- * @brief Convert ENU (east, north, up) to FLU (forward, left, up) frame.
- *
- * @param quaternion tf2::Quaternion in ENU frame.
- * @param enu_vec Eigen::Vector3d ENU vector.
- * @return Eigen::Vector3d FLU vector.
- */
-Eigen::Vector3d convertENUtoFLU(const float roll_angle,
-                                const float pitch_angle,
-                                const float yaw_angle,
-                                const Eigen::Vector3d &enu_vec);
 
 /**
- * @brief Convert ENU (east, north, up) to FLU (forward, left, up) frame.
+ * @brief Apply a quaternion rotation to a vector.
  *
- * @param quaternion tf2::Quaternion in ENU frame.
- * @param enu_vec Eigen::Vector3d ENU vector.
- * @return Eigen::Vector3d FLU vector.
+ * @param quaternion tf2::Quaternion to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertENUtoFLU(const tf2::Quaternion &quaternion, const Eigen::Vector3d &enu_vec);
+Eigen::Vector3d transform(const tf2::Quaternion &quaternion, const Eigen::Vector3d &vector);
 
 /**
- * @brief Convert ENU (east, north, up) to FLU (forward, left, up) frame.
+ * @brief Apply a quaternion rotation to a vector.
  *
- * @param quaternion geometry_msgs::msg::Quaternion in ENU frame.
- * @param enu_vec Eigen::Vector3d ENU vector.
- * @return Eigen::Vector3d FLU vector.
+ * @param roll_angle Roll angle to apply.
+ * @param pitch_angle Pitch angle to apply.
+ * @param yaw_angle Yaw angle to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertENUtoFLU(const geometry_msgs::msg::Quaternion &quaternion,
-                                const Eigen::Vector3d &enu_vec);
+Eigen::Vector3d transform(const float roll_angle,
+                          const float pitch_angle,
+                          const float yaw_angle,
+                          const Eigen::Vector3d &vector);
 
 /**
- * @brief Convert ENU (east, north, up) to FLU (forward, left, up) frame.
+ * @brief Apply a quaternion rotation to a vector.
  *
- * @param quaternion Eigen::Quaterniond in ENU frame.
- * @param enu_vec Eigen::Vector3d ENU vector.
- * @return Eigen::Vector3d FLU vector.
+ * @param quaternion geometry_msgs::Quaternion to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertENUtoFLU(const Eigen::Quaterniond &quaternion,
-                                const Eigen::Vector3d &enu_vec);
+Eigen::Vector3d transform(const geometry_msgs::msg::Quaternion &quaternion,
+                          const Eigen::Vector3d &vector);
 
 /**
- * @brief Convert FLU (forward, left, up) to ENU (east, north, up) frame.
+ * @brief Apply a quaternion rotation to a vector.
  *
- * @param quaternion tf2::Quaternion in ENU frame.
- * @param flu_vec Eigen::Vector3d FLU vector.
- * @return Eigen::Vector3d ENU vector.
+ * @param quaternion Eigen::Quaterniond to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertFLUtoENU(const float roll_angle,
-                                const float pitch_angle,
-                                const float yaw_angle,
-                                const Eigen::Vector3d &flu_vec);
+Eigen::Vector3d transform(const Eigen::Quaterniond &quaternion, const Eigen::Vector3d &vector);
 
 /**
- * @brief Convert FLU (forward, left, up) to ENU (east, north, up) frame.
+ * @brief Apply a inverse quaternion rotation to a vector.
  *
- * @param quaternion tf2::Quaternion in ENU frame.
- * @param flu_vec Eigen::Vector3d FLU vector.
- * @return Eigen::Vector3d ENU vector.
+ * @param quaternion tf2::Quaternion to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertFLUtoENU(const tf2::Quaternion &quaternion, const Eigen::Vector3d &flu_vec);
+Eigen::Vector3d transformInverse(const tf2::Quaternion &quaternion, const Eigen::Vector3d &vector);
+/**
+ * @brief Apply a inverse quaternion rotation to a vector.
+ *
+ * @param roll_angle Roll angle to apply.
+ * @param pitch_angle Pitch angle to apply.
+ * @param yaw_angle Yaw angle to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
+ */
+Eigen::Vector3d transformInverse(const float roll_angle,
+                                 const float pitch_angle,
+                                 const float yaw_angle,
+                                 const Eigen::Vector3d &vector);
 
 /**
- * @brief Convert FLU (forward, left, up) to ENU (east, north, up) frame.
+ * @brief Apply a inverse quaternion rotation to a vector.
  *
- * @param quaternion geometry_msgs::msg::Quaternion in ENU frame.
- * @param flu_vec Eigen::Vector3d FLU vector.
- * @return Eigen::Vector3d ENU vector.
+ * @param quaternion geometry_msgs::Quaternion to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertFLUtoENU(const geometry_msgs::msg::Quaternion &quaternion,
-                                const Eigen::Vector3d &flu_vec);
+Eigen::Vector3d transformInverse(const geometry_msgs::msg::Quaternion &quaternion,
+                                 const Eigen::Vector3d &vector);
 
 /**
- * @brief Convert FLU (forward, left, up) to ENU (east, north, up) frame.
+ * @brief Apply a inverse quaternion rotation to a vector.
  *
- * @param quaternion Eigen::Quaterniond in ENU frame.
- * @param flu_vec Eigen::Vector3d FLU vector.
- * @return Eigen::Vector3d ENU vector.
+ * @param quaternion Eigen::Quaterniond to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
  */
-Eigen::Vector3d convertFLUtoENU(const Eigen::Quaterniond &quaternion,
-                                const Eigen::Vector3d &flu_vec);
+Eigen::Vector3d transformInverse(const Eigen::Quaterniond &quaternion,
+                                 const Eigen::Vector3d &vector);
+
+/**
+ * @brief Apply a inverse quaternion rotation to a vector.
+ *
+ * @param quaternion geometry_msgs::msg::Pose with the quaternion to apply.
+ * @param vector Eigen::Vector3d Vector to rotate.
+ * @return
+ * @return Eigen::Vector3d Rotated vector.
+ */
+Eigen::Vector3d transformInverse(const Eigen::Quaterniond &quaternion,
+                                 const Eigen::Vector3d &vector);
 
 /**
  * @brief Convert quaternion to euler angles.
