@@ -96,36 +96,39 @@ geometry_msgs::msg::TransformStamped getTransformation(const std::string &_frame
 }
 
 geometry_msgs::msg::PointStamped TfHandler::convert(const geometry_msgs::msg::PointStamped &_point,
-                                                    const std::string &target_frame) {
+                                                    const std::string &target_frame,
+                                                    const std::chrono::nanoseconds timeout) {
   geometry_msgs::msg::PointStamped point_out;
   tf2::doTransform(_point, point_out,
                    tf_buffer_->lookupTransform(target_frame, _point.header.frame_id,
-                                               _point.header.stamp, TF_TIMEOUT));
+                                               _point.header.stamp, timeout));
   point_out.header.stamp    = _point.header.stamp;
   point_out.header.frame_id = target_frame;
   return point_out;
 };
 
 geometry_msgs::msg::PoseStamped TfHandler::convert(const geometry_msgs::msg::PoseStamped &_pose,
-                                                   const std::string &target_frame) {
+                                                   const std::string &target_frame,
+                                                   const std::chrono::nanoseconds timeout) {
   geometry_msgs::msg::PoseStamped pose_out;
   tf2::doTransform(_pose, pose_out,
                    tf_buffer_->lookupTransform(target_frame, _pose.header.frame_id,
-                                               _pose.header.stamp, TF_TIMEOUT));
+                                               _pose.header.stamp, timeout));
   pose_out.header.frame_id = target_frame;
   pose_out.header.stamp    = _pose.header.stamp;
   return pose_out;
 };
 
 geometry_msgs::msg::TwistStamped TfHandler::convert(const geometry_msgs::msg::TwistStamped &_twist,
-                                                    const std::string &target_frame) {
+                                                    const std::string &target_frame,
+                                                    const std::chrono::nanoseconds timeout) {
   geometry_msgs::msg::TwistStamped twist_out;
   geometry_msgs::msg::Vector3Stamped vector_out;
 
   vector_out.header = _twist.header;
   vector_out.vector = _twist.twist.linear;
   // transform linear speed
-  vector_out              = convert(vector_out, target_frame);
+  vector_out              = convert(vector_out, target_frame, timeout);
   twist_out.header        = vector_out.header;
   twist_out.twist.linear  = vector_out.vector;
   twist_out.twist.angular = _twist.twist.angular;
@@ -134,24 +137,26 @@ geometry_msgs::msg::TwistStamped TfHandler::convert(const geometry_msgs::msg::Tw
 
 geometry_msgs::msg::Vector3Stamped TfHandler::convert(
     const geometry_msgs::msg::Vector3Stamped &_vector,
-    const std::string &target_frame) {
+    const std::string &target_frame,
+    const std::chrono::nanoseconds timeout) {
   geometry_msgs::msg::Vector3Stamped vector_out;
   tf2::doTransform(_vector, vector_out,
                    tf_buffer_->lookupTransform(target_frame, _vector.header.frame_id,
-                                               _vector.header.stamp, TF_TIMEOUT));
+                                               _vector.header.stamp, timeout));
   vector_out.header.frame_id = target_frame;
   vector_out.header.stamp    = _vector.header.stamp;
   return vector_out;
 };
 
 nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
-                                       const std::string &target_frame) {
+                                       const std::string &target_frame,
+                                       const std::chrono::nanoseconds timeout) {
   nav_msgs::msg::Path path_out;
   for (auto &pose : _path.poses) {
     geometry_msgs::msg::PoseStamped pose_out;
     tf2::doTransform(pose, pose_out,
                      tf_buffer_->lookupTransform(target_frame, pose.header.frame_id,
-                                                 pose.header.stamp, TF_TIMEOUT));
+                                                 pose.header.stamp, timeout));
     path_out.poses.push_back(pose_out);
   }
   path_out.header.frame_id = target_frame;
@@ -161,8 +166,9 @@ nav_msgs::msg::Path TfHandler::convert(const nav_msgs::msg::Path &_path,
 
 geometry_msgs::msg::PoseStamped TfHandler::getPoseStamped(const std::string &target_frame,
                                                           const std::string &source_frame,
-                                                          const tf2::TimePoint &time) {
-  auto transform = tf_buffer_->lookupTransform(target_frame, source_frame, time, TF_TIMEOUT);
+                                                          const tf2::TimePoint &time,
+                                                          const std::chrono::nanoseconds timeout) {
+  auto transform = tf_buffer_->lookupTransform(target_frame, source_frame, time, timeout);
   geometry_msgs::msg::PoseStamped pose;
   pose.header.frame_id    = target_frame;
   pose.header.stamp       = transform.header.stamp;
@@ -184,19 +190,11 @@ geometry_msgs::msg::TransformStamped TfHandler::getTransform(const std::string &
 
 bool TfHandler::tryConvert(geometry_msgs::msg::PointStamped &_point,
                            const std::string &_target_frame) {
-  if (_target_frame == "" || _point.header.frame_id == "") {
-    RCLCPP_ERROR(rclcpp::get_logger("tf_utils"), "Could not convert from frame %s to frame %s",
-                 _point.header.frame_id.c_str(), _target_frame.c_str());
-    return false;
-  } else if (_target_frame == _point.header.frame_id) {
-    return true;
-  }
-
   try {
     _point = convert(_point, _target_frame);
     return true;
   } catch (tf2::TransformException &ex) {
-    RCLCPP_WARN(rclcpp::get_logger("tf_utils"), "Could not get transform: %s", ex.what());
+    RCLCPP_WARN(node_->get_logger(), "Could not get transform: %s", ex.what());
     return false;
   }
   return false;
@@ -204,19 +202,11 @@ bool TfHandler::tryConvert(geometry_msgs::msg::PointStamped &_point,
 
 bool TfHandler::tryConvert(geometry_msgs::msg::PoseStamped &_pose,
                            const std::string &_target_frame) {
-  if (_target_frame == "" || _pose.header.frame_id == "") {
-    RCLCPP_ERROR(rclcpp::get_logger("tf_utils"), "Could not convert from frame %s to frame %s",
-                 _pose.header.frame_id.c_str(), _target_frame.c_str());
-    return false;
-  } else if (_target_frame == _pose.header.frame_id) {
-    return true;
-  }
-
   try {
     _pose = convert(_pose, _target_frame);
     return true;
   } catch (tf2::TransformException &ex) {
-    RCLCPP_WARN(rclcpp::get_logger("tf_utils"), "Could not get transform: %s", ex.what());
+    RCLCPP_WARN(node_->get_logger(), "Could not get transform: %s", ex.what());
     return false;
   }
   return false;
@@ -224,23 +214,26 @@ bool TfHandler::tryConvert(geometry_msgs::msg::PoseStamped &_pose,
 
 bool TfHandler::tryConvert(geometry_msgs::msg::TwistStamped &_twist,
                            const std::string &_target_frame) {
-  if (_target_frame == "" || _twist.header.frame_id == "") {
-    RCLCPP_ERROR(rclcpp::get_logger("tf_utils"), "Could not convert from frame %s to frame %s",
-                 _twist.header.frame_id.c_str(), _target_frame.c_str());
-    return false;
-  } else if (_target_frame == _twist.header.frame_id) {
-    return true;
-  }
-
   try {
     _twist = convert(_twist, _target_frame);
     return true;
   } catch (tf2::TransformException &ex) {
-    RCLCPP_WARN(rclcpp::get_logger("tf_utils"), "Could not get transform: %s", ex.what());
-    return false;
+    RCLCPP_ERROR(node_->get_logger(), "Could not get transform: %s", ex.what());
   }
   return false;
 };
+
+std::pair<geometry_msgs::msg::PoseStamped, geometry_msgs::msg::TwistStamped> TfHandler::getState(
+    const geometry_msgs::msg::TwistStamped &_twist,
+    const std::string &_twist_target_frame,
+    const std::string &_pose_target_frame,
+    const std::string &_pose_source_frame,
+    const std::chrono::nanoseconds _timeout) {
+  geometry_msgs::msg::TwistStamped twist = convert(_twist, _twist_target_frame, _timeout);
+  geometry_msgs::msg::PoseStamped pose =
+      getPoseStamped(_pose_target_frame, _pose_source_frame, tf2_ros::fromMsg(twist.header.stamp));
+  return std::make_pair(pose, twist);
+}
 
 }  // namespace tf
 }  // namespace as2
