@@ -53,6 +53,8 @@
 namespace as2 {
 namespace tf {
 
+using namespace std::chrono_literals;
+
 /**
  * @brief Add namespace to the name of the Transform frame id
  *
@@ -119,7 +121,8 @@ public:
    * @throw tf2::TransformException if the transform is not available
    */
   geometry_msgs::msg::PointStamped convert(const geometry_msgs::msg::PointStamped &_point,
-                                           const std::string &target_frame);
+                                           const std::string &target_frame,
+                                           const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
   /**
    * @brief convert a geometry_msgs::msg::PoseStamped from one frame to another
@@ -129,7 +132,8 @@ public:
    * @throw tf2::TransformException if the transform is not available
    */
   geometry_msgs::msg::PoseStamped convert(const geometry_msgs::msg::PoseStamped &_pose,
-                                          const std::string &target_frame);
+                                          const std::string &target_frame,
+                                          const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
   /**
    * @brief convert a geometry_msgs::msg::TwistStamped from one frame to another (only the linear
@@ -140,7 +144,8 @@ public:
    * @throw tf2::TransformException if the transform is not available
    */
   geometry_msgs::msg::TwistStamped convert(const geometry_msgs::msg::TwistStamped &_twist,
-                                           const std::string &target_frame);
+                                           const std::string &target_frame,
+                                           const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
   /**
    * @brief convert a geometry_msgs::msg::Vector3Stamped from one frame to another
@@ -150,7 +155,8 @@ public:
    * @throw tf2::TransformException if the transform is not available
    */
   geometry_msgs::msg::Vector3Stamped convert(const geometry_msgs::msg::Vector3Stamped &_vector,
-                                             const std::string &target_frame);
+                                             const std::string &target_frame,
+                                             const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
   /**
    * @brief convert a nav_msgs::msg::Path from one frame to another
@@ -159,7 +165,9 @@ public:
    * @return nav_msgs::msg::Path in the target frame
    * @throw tf2::TransformException if the transform is not available
    */
-  nav_msgs::msg::Path convert(const nav_msgs::msg::Path &_path, const std::string &target_frame);
+  nav_msgs::msg::Path convert(const nav_msgs::msg::Path &_path,
+                              const std::string &target_frame,
+                              const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
   /**
    * @brief obtain a PoseStamped from the TF_buffer
@@ -169,9 +177,11 @@ public:
    * @return geometry_msgs::msg::PoseStamped
    * @throw tf2::TransformException if the transform is not available
    */
-  geometry_msgs::msg::PoseStamped getPoseStamped(const std::string &target_frame,
-                                                 const std::string &source_frame,
-                                                 const tf2::TimePoint &time = tf2::TimePointZero);
+  geometry_msgs::msg::PoseStamped getPoseStamped(
+      const std::string &target_frame,
+      const std::string &source_frame,
+      const tf2::TimePoint &time             = tf2::TimePointZero,
+      const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
   /**
    * @brief obtain a TransformStamped from the TF_buffer
@@ -215,6 +225,23 @@ public:
    * @throw tf2::TransformException if the transform is not available
    */
   bool tryConvert(geometry_msgs::msg::TwistStamped &_twist, const std::string &_target_frame);
+
+  /**
+   * @brief Get the pose and twist of the UAV at the given twist timestamp, in the given frames
+   *
+   * @param _twist
+   * @param _twist_target_frame
+   * @param _pose_target_frame
+   * @param _pose_source_frame
+   * @param _timeout
+   * @return std::pair<geometry_msgs::msg::PoseStamped, geometry_msgs::msg::TwistStamped>
+   */
+  std::pair<geometry_msgs::msg::PoseStamped, geometry_msgs::msg::TwistStamped> getState(
+      const geometry_msgs::msg::TwistStamped &_twist,
+      const std::string &_twist_target_frame,
+      const std::string &_pose_target_frame,
+      const std::string &_pose_source_frame,
+      const std::chrono::nanoseconds timeout = TF_TIMEOUT);
 
 };  // namespace tf
 
